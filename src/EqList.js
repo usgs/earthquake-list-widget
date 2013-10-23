@@ -125,12 +125,12 @@ define([
 		    key = null;
 
 		for (key in REGISTERED_PARSERS) {
-			if (url.indexOf(key) !== -1 || VALIDATE_URL === true ) {
+			if (url.indexOf(key) !== -1 || VALIDATE_URL === false) {
 				// Found it; notify.
 				__notify_parser(REGISTERED_PARSERS[key], data);
 
 				// Unregister for this feed
-				if( VALIDATE_URL === true ) {
+				if (VALIDATE_URL === true) {
 					EqList.unregisterListener(key);
 				}
 			}
@@ -157,14 +157,26 @@ define([
 		}
 	};
 
-	var __load_css = function () {
-		var p = document.querySelector('head');
+	var __load_css = function (url) {
+		var p = document.querySelector('head'),
+				defaultCssUrl = 'http://earthquake.usgs.gov/eqlist/eqlist.css',
+				cssUrl = null, src = null,
+				scripts = document.querySelectorAll('script[src]');
 
 		if (p) {
 			// Got a head element. Cool.
+
+			// Try to guess where the CSS is...
+			for (var i = 0; (typeof url==='undefined') && i < scripts.length; i++) {
+				src = scripts[i].src;
+				if (src.match(/EqList.js$/)) {
+					cssUrl = src.replace(/\.js$/, '.css');
+				}
+			}
+
 			var style = document.createElement('link');
 			style.setAttribute('rel', 'stylesheet');
-			style.setAttribute('href', 'http://earthquake.usgs.gov/sig/sigeqs.css');
+			style.setAttribute('href', url || cssUrl || defaultCssUrl);
 			p.appendChild(style);
 		} else {
 			// No head element. Sucky.
