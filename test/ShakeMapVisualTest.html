@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>PagerList Visual Test</title>
+	<style>
+	* {-moz-box-sizing:border-box;box-sizing:border-box;}
+	</style>
+</head>
+<body>
+	<h1>ShakeMap</h1>
+	<div id="list"></div>
+
+	<script src="requirejs/require.js"></script>
+	<script>
+	require.config({
+		baseUrl: '.'
+	});
+	require([
+		'EqList',
+		'ShakeMapList'
+	], function (
+		EqList,
+		ShakeMapList
+	) {
+		'use strict';
+
+		var pastDayList = new ShakeMapList(document.querySelector('#list'),
+				EqList.ALL_URL_WEEK);
+	});
+
+	</script>
+</body>
+</html>
