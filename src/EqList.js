@@ -1,4 +1,4 @@
-/* global define */
+/* global define, RegExp */
 define([
 ], function (
 ) {
@@ -30,28 +30,89 @@ define([
 	var M1_URL_DAY = BASE_URL + '1.0_day.geojsonp';
 	var M1_URL_HOUR = BASE_URL + '1.0_hour.geojsonp';
 
+	var ROMANS = ['I', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX',
+			'X'];
+
 	var REGISTERED_PARSERS = {};
+	var LOADED_CSS = {};
 	var VALIDATE_URL = true;
 
-	var EqList = function (container, feed) {
+	var EqList = function (container, feed, options) {
 		this._container = container || document.createElement('div');
 		this._feed = feed || SIG_URL_MONTH;
 
 		this._list = this._container.appendChild(document.createElement('ol'));
-		this._list.className = 'sigeqs';
+		this._list.className = 'eqlist ' + this._getClassName().toLowerCase();
+
+		if (options && options.hasOwnProperty('includeEvent') &&
+				typeof options.includeEvent === 'function') {
+			this._includeEvent = options.includeEvent.bind(this);
+		}
+		if (options && options.hasOwnProperty('compareEvents') &&
+				typeof options.compareEvents === 'function') {
+			this._compareEvents = options.compareEvents.bind(this);
+		}
+		if (options && options.hasOwnProperty('css')) {
+			this._loadCss(options.css);
+		} else {
+			this._loadCss(this._findCss(this._getClassName()));
+		}
 
 		this._generateLoading();
 		this._fetchList();
 	};
 
+	EqList.prototype._getClassName = function () {
+		return 'EqList';
+	};
+
+	EqList.prototype._findCss = function (key) {
+		var p = document.querySelector('head'),
+		    regex = new RegExp(key + '\\.js$'),
+		    src = null,
+		    scripts = document.querySelectorAll('script[src]');
+
+		if (p) {
+			// Got a head element. Cool.
+
+			// Try to guess where the CSS is...
+			for (var i = 0; (typeof url==='undefined') && i < scripts.length; i++) {
+				src = scripts[i].src;
+				if (src.match(regex)) {
+					return src.replace(/\.js$/, '.css');
+				}
+			}
+
+			return null;
+		} else {
+			// No head element. Sucky.
+			// TODO
+			try {
+				console.log('EqList::No head element.');
+			} catch (e) {/*Ignore*/}
+		}
+	};
+
+	EqList.prototype._loadCss = function (url) {
+		var p = document.querySelector('head');
+
+		if (p && url !== null && !LOADED_CSS.hasOwnProperty(url)) {
+			var style = document.createElement('link');
+			style.setAttribute('rel', 'stylesheet');
+			style.setAttribute('href', url);
+			p.appendChild(style);
+			LOADED_CSS[url] = true;
+		}
+	};
+
 	EqList.prototype._generateLoading = function () {
 		var loading = this._container.appendChild(document.createElement('p'));
-		loading.className = 'sigeq-loading';
+		loading.className = 'eqlist-loading';
 
 		loading.innerHTML = [
-			'Fetching list of significant earthquakes. If this takes longer ',
+			'Fetching list of earthquakes. If this takes longer ',
 			'than is reasonable, you can <a href="', this._feed, '">view the ',
-			'source data.'
+			'source data</a>.'
 		].join('');
 	};
 
@@ -59,9 +120,9 @@ define([
 		var s = document.createElement('script');
 		s.src = this._feed;
 
-		__register_parser(this._feed, (function (sigeqlist) {
+		__register_parser(this._feed, (function (eqlist) {
 			return function (data) {
-				sigeqlist._render(data);
+				eqlist._render(data);
 				s.parentNode.removeChild(s);
 			};
 		})(this));
@@ -83,7 +144,7 @@ define([
 	};
 
 	EqList.prototype._render = function (data) {
-		var events = data.features,
+		var events = this._filterEvents(data.features),
 		    i = 0,
 		    len = events.length,
 		    markup = [];
@@ -94,18 +155,158 @@ define([
 			return;
 		}
 
-		events.sort(function (a, b) {
-			return (b.properties.time - a.properties.time);
-		});
+		events.sort(this._compareEvents);
 
 		for (i = 0; i < len; i++) {
-			markup.push(__get_event_markup(events[i]));
+			markup.push(this._getEventMarkup(events[i]));
 		}
 
 		// Append to the DOM
 		this._emptyContainer();
 		this._list.innerHTML = markup.join('');
 		this._container.appendChild(this._list);
+	};
+
+	/**
+	 * Filters the given array of events based on the result of the _includeEvent
+	 * method.
+	 *
+	 * Note: We filter separate from rendering such that:
+	 *   (a) if no events pass the filter, we can still show the no events
+	 *       message to the user
+	 *   (b) we can sort the events
+	 *
+	 * @param events {Array}
+	 *      The array of event data to filter.
+	 *
+	 * @return {Array}
+	 *      A new array containing event data for events that passed filtering.
+	 */
+	EqList.prototype._filterEvents = function (events) {
+		var filtered = events.slice(0),
+		    i = events.length - 1;
+
+		for (; i >= 0; i--) {
+			if (!this._includeEvent(events[i])) {
+				filtered.splice(i, 1);
+			}
+		}
+
+		return filtered;
+	};
+
+	/**
+	 * This implementation includes all events and statically returns true.
+	 *
+	 * @param event {Object}
+	 *      A single event feature from the raw GeoJSON response.
+	 *
+	 * @return {Boolean}
+	 *      True if the event should be rendered in the list. False otherwise.
+	 */
+	EqList.prototype._includeEvent = function (/*event*/) {
+		return true;
+	};
+
+	/**
+	 * Compares the given events for sorting purposes. This implementation sorts
+	 * by time, newest first.
+	 *
+	 * @param e1 {Object}
+	 *      A single event feature object for the first event to compare.
+	 * @param e2 {Object}
+	 *      A single event feature object for the second event to compare.
+	 *
+	 * @return {Number}
+	 *      Less than zero if e1 > e2
+	 *      Zero if e1 == e2
+	 *      Greater than zero if e1 < e2
+	 */
+	EqList.prototype._compareEvents = function (e1, e2) {
+		return (e2.properties.time - e1.properties.time);
+	};
+
+	/**
+	 * Gets the markup for one event.
+	 *
+	 * @param e {Object}
+	 *      A single event feature from the raw GeoJSON response.
+	 *
+	 * @return {String}
+	 *      A string representing the markup for a single event feature.
+	 */
+	EqList.prototype._getEventMarkup = function (e) {
+		var p = e.properties;
+
+		return [
+			'<li class="eqitem">',
+				'<span class="value">', this._getEventValue(e), '</span>',
+				'<a class="title" href="', p.url, '">',
+					this._getEventTitle(e),
+				'</a>',
+				'<span class="subtitle">', this._getEventSubtitle(e), '</span>',
+				'<span class="aside">',
+					this._getEventAside(e),
+				'</span>',
+			'</li>'
+		].join('');
+	};
+
+	EqList.prototype._getEventValue = function (e) {
+		return this._formatMagnitude(e.properties.mag);
+	};
+
+	EqList.prototype._getEventTitle = function (e) {
+		return e.properties.place;
+	};
+
+	EqList.prototype._getEventSubtitle = function (e) {
+		return this._formatDate(e.properties.time);
+	};
+
+	EqList.prototype._getEventAside = function (e) {
+		return this._formatDepth(e.geometry.coordinates[2]) + ' km deep';
+	};
+
+
+	EqList.prototype._formatMagnitude = function (magnitude) {
+		return magnitude.toFixed(1);
+	};
+
+	EqList.prototype._formatDepth = function (depth) {
+		return depth.toFixed(1);
+	};
+
+	EqList.prototype._formatDate = function (stamp) {
+		var t = new Date(stamp),
+		    y = t.getUTCFullYear(),
+		    m = t.getUTCMonth()+1,
+		    d = t.getUTCDate(),
+		    h = t.getUTCHours(),
+		    i = t.getUTCMinutes(),
+		    s = t.getUTCSeconds();
+
+		if (m < 10) { m = '0' + m; }
+		if (d < 10) { d = '0' + d; }
+		if (h < 10) { h = '0' + h; }
+		if (i < 10) { i = '0' + i; }
+		if (s < 10) { s = '0' + s; }
+
+		return ''+y+'-'+m+'-'+d+' '+h+':'+i+':'+s+' UTC';
+	};
+
+	EqList.prototype._decToRoman = function (dec) {
+		var intval = parseInt(dec||0, 10);
+
+		if (intval < 0) {
+			intval = 0;
+		}
+
+		if (intval > (ROMANS.length - 1)) {
+			intval = ROMANS.length - 1;
+		}
+
+		return ROMANS[intval];
 	};
 
 	/**
@@ -119,6 +320,7 @@ define([
 		REGISTERED_PARSERS[key] = null;
 		delete REGISTERED_PARSERS[key];
 	};
+
 
 	window.eqfeed_callback = function (data) {
 		var url = data.metadata.url,
@@ -135,8 +337,8 @@ define([
 				}
 			}
 		}
-
 	};
+
 
 	var __register_parser = function (feed, callback) {
 		var parsers = REGISTERED_PARSERS[feed];
@@ -157,78 +359,17 @@ define([
 		}
 	};
 
-	var __load_css = function (url) {
-		var p = document.querySelector('head'),
-				defaultCssUrl = 'http://earthquake.usgs.gov/eqlist/eqlist.css',
-				cssUrl = null, src = null,
-				scripts = document.querySelectorAll('script[src]');
-
-		if (p) {
-			// Got a head element. Cool.
-
-			// Try to guess where the CSS is...
-			for (var i = 0; (typeof url==='undefined') && i < scripts.length; i++) {
-				src = scripts[i].src;
-				if (src.match(/EqList.js$/)) {
-					cssUrl = src.replace(/\.js$/, '.css');
-				}
-			}
-
-			var style = document.createElement('link');
-			style.setAttribute('rel', 'stylesheet');
-			style.setAttribute('href', url || cssUrl || defaultCssUrl);
-			p.appendChild(style);
-		} else {
-			// No head element. Sucky.
-			// TODO
-			try {
-				console.log('EqList::No head element.');
-			} catch (e) {/*Ignore*/}
-		}
-	};
-
-	var __get_event_markup = function (e) {
-		var p = e.properties,
-		    t = new Date(p.time),
-		    y = t.getUTCFullYear(),
-		    m = t.getUTCMonth()+1,
-		    d = t.getUTCDate(),
-		    h = t.getUTCHours(),
-		    i = t.getUTCMinutes(),
-		    s = t.getUTCSeconds();
-
-		if (m < 10) { m = '0' + m; }
-		if (d < 10) { d = '0' + d; }
-		if (h < 10) { h = '0' + h; }
-		if (i < 10) { i = '0' + i; }
-		if (s < 10) { s = '0' + s; }
-		var dateStamp = ''+y+'-'+m+'-'+d+' '+h+':'+i+':'+s+' UTC';
-
-		return [
-			'<li class="sigeq">',
-				'<span class="mag">', p.mag.toFixed(1), '</span>',
-				'<a class="place" href="', p.url, '">', p.place, '</a>',
-				'<span class="time">', dateStamp, '</span>',
-				'<span class="depth">',
-					e.geometry.coordinates[2].toFixed(1),
-				' km deep</span>',
-			'</li>'
-		].join('');
-	};
-
-	// Add CSS only once
-	__load_css();
 
 	// Expose these as statics for external usage
 	EqList.SIG_URL_MONTH = SIG_URL_MONTH;
-	EqList.SIG_URL_WEEK  = SIG_URL_WEEK;
-	EqList.SIG_URL_DAY   = SIG_URL_DAY;
-	EqList.SIG_URL_HOUR   = SIG_URL_HOUR;
+	EqList.SIG_URL_WEEK = SIG_URL_WEEK;
+	EqList.SIG_URL_DAY = SIG_URL_DAY;
+	EqList.SIG_URL_HOUR = SIG_URL_HOUR;
 
 	EqList.ALL_URL_MONTH = ALL_URL_MONTH;
-	EqList.ALL_URL_WEEK  = ALL_URL_WEEK;
-	EqList.ALL_URL_DAY   = ALL_URL_DAY;
-	EqList.ALL_URL_HOUR   = ALL_URL_HOUR;
+	EqList.ALL_URL_WEEK = ALL_URL_WEEK;
+	EqList.ALL_URL_DAY = ALL_URL_DAY;
+	EqList.ALL_URL_HOUR = ALL_URL_HOUR;
 
 	EqList.M45_URL_MONTH = M45_URL_MONTH;
 	EqList.M45_URL_WEEK = M45_URL_WEEK;

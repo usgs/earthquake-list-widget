@@ -1,9 +1,9 @@
-.sigeqs {
+.eqlist {
 	list-style:none;
 	margin:0;
 	padding:0;
 }
-.sigeqs .sigeq {
+.eqlist .eqitem {
 	position:relative;
 	margin:0;
 	padding:5px 5px 1.5em 40px;
@@ -11,7 +11,7 @@
 	-webkit-text-size-adjust:none;
 	border-bottom:1px solid #EEE;
 }
-.sigeqs .sigeq .mag {
+.eqlist .eqitem .value {
 	font-weight:bold;
 	font-size:larger;
 	width:40px;
@@ -21,21 +21,21 @@
 	position:absolute;
 	top:0; left:0;
 }
-.sigeqs .sigeq .place {
+.eqlist .eqitem .title {
 	overflow:hidden;
 	white-space:nowrap;
 	text-overflow:ellipsis;
 	display:block;
 	margin-bottom:2px;
 }
-.sigeqs .sigeq .time {
+.eqlist .eqitem .subtitle {
 	display:block;
 	position:absolute;
 	bottom:5px;
 	left:40px;
 	color:#666;
 }
-.sigeqs .sigeq .depth {
+.eqlist .eqitem .aside {
 	display:block;
 	position:absolute;
 	bottom:5px;
@@ -45,7 +45,7 @@
 
 
 /* Spinner GIF */
-.sigeq-loading {
+.eqlist-loading {
 	padding-left:20px;
 	background-repeat:no-repeat;
 	background-position:0 4px;
