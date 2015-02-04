@@ -19,7 +19,7 @@ var browserify = {
     }
   },
   source: {
-    src: []
+    src: [],
     dest: config.build + '/' + config.src + '/DYFIList.js',
     options: {
       alias: EXPORTS.map (function ( path) {
