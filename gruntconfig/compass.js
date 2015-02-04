@@ -10,10 +10,10 @@ var compass = {
       environment: 'development'
     }
   },
-  test: {
+  example: {
     options: {
-      sassDir: config.test,
-      cssDir: config.build + '/test',
+      sassDir: config.example,
+      cssDir: config.build + '/example',
       environment: 'development'
     }
   }
