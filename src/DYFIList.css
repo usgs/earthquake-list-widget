@@ -1,16 +1,16 @@
 @import url('EqList.css');
 
 .roman {
-	display:block;
-	line-height:1.0;
-	width:auto;
-	height:auto;
-	padding:2px 4px;
-	margin:12px 6px 0 6px;
+  display:block;
+  line-height:1.0;
+  width:auto;
+  height:auto;
+  padding:2px 4px;
+  margin:12px 6px 0 6px;
 }
 
 .mmiI{color:#000!important;background-color:#FFF!important;
-		box-shadow:0 0 1px #666}
+    box-shadow:0 0 1px #666}
 .mmiII{color:#000!important;background-color:#ACD8E9!important}
 .mmiIII{color:#000!important;background-color:#ACD8E9!important}
 .mmiIV{color:#000!important;background-color:#83D0DA!important}

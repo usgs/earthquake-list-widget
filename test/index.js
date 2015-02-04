@@ -1,37 +1,37 @@
 require.config({
-	baseUrl: '..',
-	paths: {
-		mocha: 'mocha/mocha',
-		chai: 'chai/chai'
-	},
-	shim: {
-		mocha: {
-			exports: 'mocha'
-		},
-		chai: {
-			deps: ['mocha'],
-			exports: 'chai'
-		}
-	}
+  baseUrl: '..',
+  paths: {
+    mocha: 'mocha/mocha',
+    chai: 'chai/chai'
+  },
+  shim: {
+    mocha: {
+      exports: 'mocha'
+    },
+    chai: {
+      deps: ['mocha'],
+      exports: 'chai'
+    }
+  }
 });
 
 require([
-	'mocha',
+  'mocha',
 ], function (
-	mocha
+  mocha
 ) {
-	'use strict';
+  'use strict';
 
-	mocha.setup('bdd');
+  mocha.setup('bdd');
 
-	// Add each test class here as they are implemented
-	require([
-		'spec/EqListTest'
-	], function () {
-		if (window.mochaPhantomJS) {
-			window.mochaPhantomJS.run();
-		} else {
-			mocha.run();
-		}
-	});
+  // Add each test class here as they are implemented
+  require([
+    'spec/EqListTest'
+  ], function () {
+    if (window.mochaPhantomJS) {
+      window.mochaPhantomJS.run();
+    } else {
+      mocha.run();
+    }
+  });
 });

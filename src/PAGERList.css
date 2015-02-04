@@ -1,21 +1,21 @@
 @import url('DYFIList.css');
 
 .pagerlist .eqitem {
-	padding-left: 80px;
+  padding-left: 80px;
 }
 .pagerlist .eqitem .value {
-	width: 80px;
+  width: 80px;
 }
 .pagerlist .eqitem .subtitle {
-	left: 80px;
+  left: 80px;
 }
 
 .pagerlist .eqitem .value > span {
-	padding:2px 4px;
-	text-shadow:1px 1px 0 rgba(255,255,255,0.3);
+  padding:2px 4px;
+  text-shadow:1px 1px 0 rgba(255,255,255,0.3);
 }
 .pagerlist .eqitem .aside > span {
-	padding:1px 3px;
+  padding:1px 3px;
 }
 
 .pager-alertlevel-pending{background-color:#fff;color:#000}
