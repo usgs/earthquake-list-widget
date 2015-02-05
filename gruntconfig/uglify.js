@@ -6,8 +6,8 @@ var uglify = {
   options: {
   },
   dist: {
-    src: config.build + '/' + config.src + '/hazdev-list-widget.js',
-    dest: config.dist + '/hazdev-listw-idget.js'
+    src: config.build + '/' + config.src + '/earthquake-list-widget.js',
+    dest: config.dist + '/earthquake-list-widget.js'
   }
 };
 
