@@ -1,0 +1,22 @@
+@import url('EqList.css');
+
+.roman {
+  display:block;
+  line-height:1.0;
+  width:auto;
+  height:auto;
+  padding:2px 4px;
+  margin:12px 6px 0 6px;
+}
+
+.mmiI{color:#000!important;background-color:#FFF!important;
+    box-shadow:0 0 1px #666}
+.mmiII{color:#000!important;background-color:#ACD8E9!important}
+.mmiIII{color:#000!important;background-color:#ACD8E9!important}
+.mmiIV{color:#000!important;background-color:#83D0DA!important}
+.mmiV{color:#000!important;background-color:#7BC87F!important}
+.mmiVI{color:#000!important;background-color:#F9F518!important}
+.mmiVII{color:#000!important;background-color:#FAC611!important}
+.mmiVIII{color:#000!important;background-color:#FA8A11!important}
+.mmiIX{color:#000!important;background-color:#F7100C!important}
+.mmiX{color:#000!important;background-color:#C80F0A!important}
