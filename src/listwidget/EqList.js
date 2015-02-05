@@ -58,6 +58,25 @@ var EqList = function (container, feed, options) {
   this._fetchList();
 };
 
+var __register_parser = function (feed, callback) {
+  var parsers = REGISTERED_PARSERS[feed];
+
+  if (typeof parsers === 'undefined' || parsers === null) {
+    parsers = [];
+  }
+
+  parsers.push(callback);
+  REGISTERED_PARSERS[feed] = parsers;
+};
+
+var __notify_parser = function (parsers, data) {
+  var i = 0, len = parsers.length;
+
+  for (; i < len; i++) {
+    parsers[i].call(null, data);
+  }
+};
+
 EqList.prototype._getClassName = function () {
   return 'EqList';
 };
@@ -334,27 +353,6 @@ window.eqfeed_callback = function (data) {
     }
   }
 };
-
-
-var __register_parser = function (feed, callback) {
-  var parsers = REGISTERED_PARSERS[feed];
-
-  if (typeof parsers === 'undefined' || parsers === null) {
-    parsers = [];
-  }
-
-  parsers.push(callback);
-  REGISTERED_PARSERS[feed] = parsers;
-};
-
-var __notify_parser = function (parsers, data) {
-  var i = 0, len = parsers.length;
-
-  for (; i < len; i++) {
-    parsers[i].call(null, data);
-  }
-};
-
 
 // Expose these as statics for external usage
 EqList.SIG_URL_MONTH = SIG_URL_MONTH;
