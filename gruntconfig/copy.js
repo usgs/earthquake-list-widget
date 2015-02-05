@@ -9,12 +9,12 @@ var copy = {
     src: '*.html',
     dest: config.build + '/test'
   },
-  example: {
-    expand: true,
-    cwd: config.example,
-    src: '*.html',
-    dest: config.build + '/example'
-  },
+  // example: {
+  //   expand: true,
+  //   cwd: config.example,
+  //   src: '*.html',
+  //   dest: config.build + '/example'
+  // },
   mocha: {
     expand: true,
     cwd: 'node_modules',
