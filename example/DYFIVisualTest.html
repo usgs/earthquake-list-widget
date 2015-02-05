@@ -23,31 +23,21 @@
     <div id="pastweek-list"></div>
   </section>
 
-  <script src="requirejs/require.js"></script>
+  <script src="earthquake-list-widget.js"></script>
   <script>
-  require.config({
-    baseUrl: '.'
-  });
-  require([
-    'EqList',
-    'DYFIList'
-  ], function (
-    EqList,
-    DYFIList
-  ) {
-    'use strict';
+  'use strict';
 
-    var pastDayList = new DYFIList(document.querySelector('#pastday-list'),
-        EqList.ALL_URL_DAY);
+  var DYFIList = require('listwidget/DYFIList');
 
-    var pastWeekList = new DYFIList(document.querySelector('#pastweek-list'),
-        EqList.ALL_URL_WEEK, {
-          includeEvent: function (e) {
-            var p = e.properties;
-            return (p.types.indexOf('dyfi') !== -1 && p.felt !== null && p.felt > 5);
-          }
-        });
-  });
+  var pastDayList = new DYFIList(document.querySelector('#pastday-list'),
+      EqList.ALL_URL_DAY);
+
+  var pastWeekList = new DYFIList(document.querySelector('#pastweek-list'),
+      EqList.ALL_URL_WEEK, {
+        includeEvent: function (e) {
+          var p = e.properties;
+          return (p.types.indexOf('dyfi') !== -1 && p.felt !== null && p.felt > 5);
+        }
 
   </script>
 </body>
