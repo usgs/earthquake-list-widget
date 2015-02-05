@@ -10,23 +10,14 @@
   <h1>PAGER</h1>
   <div id="list"></div>
 
-  <script src="requirejs/require.js"></script>
+  <script src="earthquake-list-widget.js"></script>
   <script>
-  require.config({
-    baseUrl: '.'
-  });
-  require([
-    'EqList',
-    'PAGERList'
-  ], function (
-    EqList,
-    PAGERList
-  ) {
-    'use strict';
+  'use strict';
 
-    var pastDayList = new PAGERList(document.querySelector('#list'),
-        EqList.ALL_URL_WEEK);
-  });
+  var PAGERVisualTest = require('listwidget/DYFIList');
+
+  var pastDayList = new PAGERList(document.querySelector('#list'),
+      EqList.ALL_URL_WEEK);
 
   </script>
 </body>
