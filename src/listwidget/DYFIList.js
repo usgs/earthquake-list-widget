@@ -1,4 +1,10 @@
 'use strict';
+// not sure if this will work
+var EqList;
+
+EqList = './EqList';
+
+//end of ?
 
 var DYFIList = function () {
   EqList.apply(this, arguments);
