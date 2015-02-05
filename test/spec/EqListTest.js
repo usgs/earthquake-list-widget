@@ -1,6 +1,7 @@
 /* global describe, chai, it */
 'use strict';
   var expect = chai.expect;
+  var EqList = require('listwidget/EqList');
 
 describe('EqList', function () {
   describe('Constructor', function () {
@@ -10,7 +11,7 @@ describe('EqList', function () {
       /* jshint +W030 */
     });
     it('Is instantiated', function () {
-      var eqList = new EqList();
+      var eqList = EqList();
       expect(eqList).to.be.an.instanceof(EqList);
     });
   });
