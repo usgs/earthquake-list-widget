@@ -1,31 +1,49 @@
 'use strict';
 
-var ShakeMapList = function () {
-  EqList.apply(this, arguments);
-};
-ShakeMapList.prototype = Object.create(EqList.prototype);
+var EqList = require('./EqList');
 
-ShakeMapList.prototype._getClassName = function () {
-  return 'ShakeMapList';
-};
+var ShakeMapList = function (container, feed, options) {
+  var _this,
+      _initialize,
 
-ShakeMapList.prototype._includeEvent = function (e) {
-  return (e.properties.types.indexOf('shakemap') !== -1);
-};
+      _autoload;
 
+  options = options || {};
+  _autoload = (options.load !== false);
+  options.load = false;
 
-ShakeMapList.prototype._getEventValue = function (e) {
-  var romanMmi = this._decToRoman(e.properties.mmi);
+  _this = EqList(container, feed, options);
 
-  return '<span class="roman mmi' + romanMmi + '">' + romanMmi + '</span>';
-};
+  _initialize = function () {
+    if (_autoload) {
+      _this.load();
+    }
+  };
 
-ShakeMapList.prototype._getEventTitle = function (e) {
-  return e.properties.title;
-};
+  _this._getClassName = function () {
+    return 'ShakeMapList';
+  };
 
-ShakeMapList.prototype._getEventAside = function (e) {
-  return e.id;
+  _this._includeEvent = function (e) {
+    return (e.properties.types.indexOf('shakemap') !== -1);
+  };
+
+  _this._getEventValue = function (e) {
+    var romanMmi = this._decToRoman(e.properties.mmi);
+
+    return '<span class="roman mmi' + romanMmi + '">' + romanMmi + '</span>';
+  };
+
+  _this._getEventTitle = function (e) {
+    return e.properties.title;
+  };
+
+  _this._getEventAside = function (e) {
+    return e.id;
+  };
+
+  _initialize();
+  return _this;
 };
 
 module.exports = ShakeMapList;
