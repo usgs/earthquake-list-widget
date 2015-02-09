@@ -33,31 +33,6 @@ var REGISTERED_PARSERS = {};
 var LOADED_CSS = {};
 var VALIDATE_URL = true;
 
-var EqList = function (container, feed, options) {
-  this._container = container || document.createElement('div');
-  this._feed = feed || SIG_URL_MONTH;
-
-  this._list = this._container.appendChild(document.createElement('ol'));
-  this._list.className = 'eqlist ' + this._getClassName().toLowerCase();
-
-  if (options && options.hasOwnProperty('includeEvent') &&
-      typeof options.includeEvent === 'function') {
-    this._includeEvent = options.includeEvent.bind(this);
-  }
-  if (options && options.hasOwnProperty('compareEvents') &&
-      typeof options.compareEvents === 'function') {
-    this._compareEvents = options.compareEvents.bind(this);
-  }
-  if (options && options.hasOwnProperty('css')) {
-    this._loadCss(options.css);
-  } else {
-    this._loadCss(this._findCss(this._getClassName()));
-  }
-
-  this._generateLoading();
-  this._fetchList();
-};
-
 var __register_parser = function (feed, callback) {
   var parsers = REGISTERED_PARSERS[feed];
 
@@ -77,11 +52,7 @@ var __notify_parser = function (parsers, data) {
   }
 };
 
-EqList.prototype._getClassName = function () {
-  return 'EqList';
-};
-
-EqList.prototype._findCss = function (key) {
+var __findCss = function (key) {
   var p = document.querySelector('head'),
       regex = new RegExp(key + '\\.js$'),
       src = null,
@@ -108,7 +79,7 @@ EqList.prototype._findCss = function (key) {
   }
 };
 
-EqList.prototype._loadCss = function (url) {
+var __loadCss = function (url) {
   var p = document.querySelector('head');
 
   if (p && url !== null && !LOADED_CSS.hasOwnProperty(url)) {
@@ -120,208 +91,258 @@ EqList.prototype._loadCss = function (url) {
   }
 };
 
-EqList.prototype._generateLoading = function () {
-  var loading = this._container.appendChild(document.createElement('p'));
-  loading.className = 'eqlist-loading';
 
-  loading.innerHTML = [
-    'Fetching list of earthquakes. If this takes longer ',
-    'than is reasonable, you can <a href="', this._feed, '">view the ',
-    'source data</a>.'
-  ].join('');
-};
+var EqList = function (container, feed, options) {
+  var _this,
+      _initialize,
 
-EqList.prototype._fetchList = function () {
-  var s = document.createElement('script');
-  s.src = this._feed;
+      _container,
+      _css,
+      _feed,
 
-  __register_parser(this._feed, (function (eqlist) {
-    return function (data) {
-      eqlist._render(data);
-      s.parentNode.removeChild(s);
-    };
-  })(this));
+      _compareEvents,
+      _createError,
+      _emptyContainer,
+      _fetchList,
+      _filterEvents,
+      _generateLoading,
+      _includeEvent,
+      _render;
 
-  document.querySelector('script').parentNode.appendChild(s);
-};
+  _this = Object.create({});
 
-EqList.prototype._emptyContainer = function () {
-  this._container.innerHTML = '';
-};
+  _initialize = function () {
+    options = options || {};
+    _container = container || document.createElement('div');
+    _feed = feed || SIG_URL_MONTH;
 
-EqList.prototype._createError = function (message) {
-  var p = document.createElement('p');
-
-  p.className = 'error';
-  p.innerHTML = message;
-
-  return p;
-};
-
-EqList.prototype._render = function (data) {
-  var events = this._filterEvents(data.features),
-      i = 0,
-      len = events.length,
-      markup = [];
-
-  if (len === 0) {
-    this._emptyContainer();
-    this._container.appendChild(this._createError('No Events Found.'));
-    return;
-  }
-
-  events.sort(this._compareEvents);
-
-  for (i = 0; i < len; i++) {
-    markup.push(this._getEventMarkup(events[i]));
-  }
-
-  // Append to the DOM
-  this._emptyContainer();
-  this._list.innerHTML = markup.join('');
-  this._container.appendChild(this._list);
-};
-
-/**
- * Filters the given array of events based on the result of the _includeEvent
- * method.
- *
- * Note: We filter separate from rendering such that:
- *   (a) if no events pass the filter, we can still show the no events
- *       message to the user
- *   (b) we can sort the events
- *
- * @param events {Array}
- *      The array of event data to filter.
- *
- * @return {Array}
- *      A new array containing event data for events that passed filtering.
- */
-EqList.prototype._filterEvents = function (events) {
-  var filtered = events.slice(0),
-      i = events.length - 1;
-
-  for (; i >= 0; i--) {
-    if (!this._includeEvent(events[i])) {
-      filtered.splice(i, 1);
+    _compareEvents = options.compareEvents || null;
+    _css = options.css || null;
+    _includeEvent = options.includeEvent || null;
+    if (options.load !== false) {
+      _this.load();
     }
-  }
+    options = null;
+  };
 
-  return filtered;
-};
+  _this._getClassName = function () {
+    return 'EqList';
+  };
 
-/**
- * This implementation includes all events and statically returns true.
- *
- * @param event {Object}
- *      A single event feature from the raw GeoJSON response.
- *
- * @return {Boolean}
- *      True if the event should be rendered in the list. False otherwise.
- */
-EqList.prototype._includeEvent = function (/*event*/) {
-  return true;
-};
+  _this.load = function () {
+    __loadCss(_css || __findCss('earthquake-list-widget'));
+    _generateLoading();
+    _fetchList();
+  };
 
-/**
- * Compares the given events for sorting purposes. This implementation sorts
- * by time, newest first.
- *
- * @param e1 {Object}
- *      A single event feature object for the first event to compare.
- * @param e2 {Object}
- *      A single event feature object for the second event to compare.
- *
- * @return {Number}
- *      Less than zero if e1 > e2
- *      Zero if e1 == e2
- *      Greater than zero if e1 < e2
- */
-EqList.prototype._compareEvents = function (e1, e2) {
-  return (e2.properties.time - e1.properties.time);
-};
+  _generateLoading = function () {
+    var loading = _container.appendChild(document.createElement('p'));
+    loading.className = 'eqlist-loading';
 
-/**
- * Gets the markup for one event.
- *
- * @param e {Object}
- *      A single event feature from the raw GeoJSON response.
- *
- * @return {String}
- *      A string representing the markup for a single event feature.
- */
-EqList.prototype._getEventMarkup = function (e) {
-  var p = e.properties;
+    loading.innerHTML =
+      'Fetching list of earthquakes. If this takes longer ' +
+      'than is reasonable, you can <a href="' + _feed + '">view the ' +
+      'source data</a>.';
+  };
 
-  return [
-    '<li class="eqitem">',
-      '<span class="value">', this._getEventValue(e), '</span>',
-      '<a class="title" href="', p.url, '">',
-        this._getEventTitle(e),
-      '</a>',
-      '<span class="subtitle">', this._getEventSubtitle(e), '</span>',
-      '<span class="aside">',
-        this._getEventAside(e),
-      '</span>',
-    '</li>'
-  ].join('');
-};
+  _fetchList = function () {
+    var s = document.createElement('script');
+        s.src = _feed;
 
-EqList.prototype._getEventValue = function (e) {
-  return this._formatMagnitude(e.properties.mag);
-};
+    __register_parser(_feed, function (data) {
+        _render(data);
+        s.parentNode.removeChild(s);
+    });
+    document.querySelector('script').parentNode.appendChild(s);
+  };
 
-EqList.prototype._getEventTitle = function (e) {
-  return e.properties.place;
-};
+  _emptyContainer = function () {
+    _container.innerHTML = '';
+  };
 
-EqList.prototype._getEventSubtitle = function (e) {
-  return this._formatDate(e.properties.time);
-};
+  _createError = function (message) {
+    var p = document.createElement('p');
 
-EqList.prototype._getEventAside = function (e) {
-  return this._formatDepth(e.geometry.coordinates[2]) + ' km deep';
-};
+    p.className = 'error';
+    p.innerHTML = message;
+
+    return p;
+  };
+
+  _render = function (data) {
+    var events = _filterEvents(data.features),
+        i = 0,
+        len = events.length,
+        list,
+        markup = [];
+
+    if (len === 0) {
+      _emptyContainer();
+      _container.appendChild(_createError('No Events Found.'));
+      return;
+    }
+
+    events.sort(_compareEvents || _this._compareEvents);
+
+    for (i = 0; i < len; i++) {
+      markup.push(_this._getEventMarkup(events[i]));
+    }
+
+    // Append to the DOM
+    _emptyContainer();
+    list = document.createElement('ol');
+    list.className = 'eqlist ' + _this._getClassName().toLowerCase();
+    list.innerHTML = markup.join('');
+    _container.appendChild(list);
+  };
+
+  /**
+   * Filters the given array of events based on the result of the _includeEvent
+   * method.
+   *
+   * Note: We filter separate from rendering such that:
+   *   (a) if no events pass the filter, we can still show the no events
+   *       message to the user
+   *   (b) we can sort the events
+   *
+   * @param events {Array}
+   *      The array of event data to filter.
+   *
+   * @return {Array}
+   *      A new array containing event data for events that passed filtering.
+   */
+  _filterEvents = function (events) {
+    var filtered = events.slice(0),
+        i = events.length - 1,
+        includeEvent;
+
+    includeEvent = _includeEvent || _this._includeEvent;
+
+    for (; i >= 0; i--) {
+      if (!includeEvent(events[i])) {
+        filtered.splice(i, 1);
+      }
+    }
+
+    return filtered;
+  };
+
+  /**
+   * This implementation includes all events and statically returns true.
+   *
+   * @param event {Object}
+   *      A single event feature from the raw GeoJSON response.
+   *
+   * @return {Boolean}
+   *      True if the event should be rendered in the list. False otherwise.
+   */
+  _this._includeEvent = function (/*event*/) {
+    return true;
+  };
+
+  /**
+   * Compares the given events for sorting purposes. This implementation sorts
+   * by time, newest first.
+   *
+   * @param e1 {Object}
+   *      A single event feature object for the first event to compare.
+   * @param e2 {Object}
+   *      A single event feature object for the second event to compare.
+   *
+   * @return {Number}
+   *      Less than zero if e1 > e2
+   *      Zero if e1 == e2
+   *      Greater than zero if e1 < e2
+   */
+  _this._compareEvents = function (e1, e2) {
+    return (e2.properties.time - e1.properties.time);
+  };
+
+  /**
+   * Gets the markup for one event.
+   *
+   * @param e {Object}
+   *      A single event feature from the raw GeoJSON response.
+   *
+   * @return {String}
+   *      A string representing the markup for a single event feature.
+   */
+  _this._getEventMarkup = function (e) {
+    var p = e.properties;
+
+    return [
+      '<li class="eqitem">',
+        '<span class="value">', _this._getEventValue(e), '</span>',
+        '<a class="title" href="', p.url, '">',
+          _this._getEventTitle(e),
+        '</a>',
+        '<span class="subtitle">', _this._getEventSubtitle(e), '</span>',
+        '<span class="aside">',
+          _this._getEventAside(e),
+        '</span>',
+      '</li>'
+    ].join('');
+  };
+
+  _this._getEventValue = function (e) {
+    return _this._formatMagnitude(e.properties.mag);
+  };
+
+  _this._getEventTitle = function (e) {
+    return e.properties.place;
+  };
+
+  _this._getEventSubtitle = function (e) {
+    return _this._formatDate(e.properties.time);
+  };
+
+  _this._getEventAside = function (e) {
+    return _this._formatDepth(e.geometry.coordinates[2]) + ' km deep';
+  };
 
 
-EqList.prototype._formatMagnitude = function (magnitude) {
-  return magnitude.toFixed(1);
-};
+  _this._formatMagnitude = function (magnitude) {
+    return magnitude.toFixed(1);
+  };
 
-EqList.prototype._formatDepth = function (depth) {
-  return depth.toFixed(1);
-};
+  _this._formatDepth = function (depth) {
+    return depth.toFixed(1);
+  };
 
-EqList.prototype._formatDate = function (stamp) {
-  var t = new Date(stamp),
-      y = t.getUTCFullYear(),
-      m = t.getUTCMonth()+1,
-      d = t.getUTCDate(),
-      h = t.getUTCHours(),
-      i = t.getUTCMinutes(),
-      s = t.getUTCSeconds();
+  _this._formatDate = function (stamp) {
+    var t = new Date(stamp),
+        y = t.getUTCFullYear(),
+        m = t.getUTCMonth()+1,
+        d = t.getUTCDate(),
+        h = t.getUTCHours(),
+        i = t.getUTCMinutes(),
+        s = t.getUTCSeconds();
 
-  if (m < 10) { m = '0' + m; }
-  if (d < 10) { d = '0' + d; }
-  if (h < 10) { h = '0' + h; }
-  if (i < 10) { i = '0' + i; }
-  if (s < 10) { s = '0' + s; }
+    if (m < 10) { m = '0' + m; }
+    if (d < 10) { d = '0' + d; }
+    if (h < 10) { h = '0' + h; }
+    if (i < 10) { i = '0' + i; }
+    if (s < 10) { s = '0' + s; }
 
-  return ''+y+'-'+m+'-'+d+' '+h+':'+i+':'+s+' UTC';
-};
+    return ''+y+'-'+m+'-'+d+' '+h+':'+i+':'+s+' UTC';
+  };
 
-EqList.prototype._decToRoman = function (dec) {
-  var intval = parseInt(dec||0, 10);
+  _this._decToRoman = function (dec) {
+    var intval = parseInt(dec||0, 10);
 
-  if (intval < 0) {
-    intval = 0;
-  }
+    if (intval < 0) {
+      intval = 0;
+    }
 
-  if (intval > (ROMANS.length - 1)) {
-    intval = ROMANS.length - 1;
-  }
+    if (intval > (ROMANS.length - 1)) {
+      intval = ROMANS.length - 1;
+    }
 
-  return ROMANS[intval];
+    return ROMANS[intval];
+  };
+
+  _initialize();
+  return _this;
 };
 
 /**
