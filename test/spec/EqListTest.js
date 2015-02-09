@@ -10,9 +10,5 @@ describe('EqList', function () {
       expect(EqList).not.to.be.null;
       /* jshint +W030 */
     });
-    it('Is instantiated', function () {
-      var eqList = EqList();
-      expect(eqList).to.be.an.instanceof(EqList);
-    });
   });
 });
