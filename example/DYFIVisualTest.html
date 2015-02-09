@@ -28,16 +28,18 @@
   'use strict';
 
   var DYFIList = require('listwidget/DYFIList');
+  var EqList = require('listwidget/EqList');
 
-  var pastDayList = new DYFIList(document.querySelector('#pastday-list'),
+  var pastDayList = DYFIList(document.querySelector('#pastday-list'),
       EqList.ALL_URL_DAY);
 
-  var pastWeekList = new DYFIList(document.querySelector('#pastweek-list'),
+  var pastWeekList = DYFIList(document.querySelector('#pastweek-list'),
       EqList.ALL_URL_WEEK, {
         includeEvent: function (e) {
           var p = e.properties;
           return (p.types.indexOf('dyfi') !== -1 && p.felt !== null && p.felt > 5);
         }
+      });
 
   </script>
 </body>
