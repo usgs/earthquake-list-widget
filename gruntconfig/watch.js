@@ -26,12 +26,10 @@ var watch = {
   },
   scss: {
     files: [
-      config.src + '/**/*.scss',
       config.src + '/**/*.scss'
     ],
     tasks: [
-      'compass:dev',
-      'compass:test'
+      'compass:dev'
     ]
   },
   gruntfile: {
@@ -41,15 +39,6 @@ var watch = {
     ],
     tasks: [
       'jshint:gruntfile'
-    ]
-  },
-  example: {
-    files: [
-      config.example + '/*.html',
-      config.example + '/**/*.js'
-    ],
-    tasks: [
-      'build'
     ]
   }
 };
