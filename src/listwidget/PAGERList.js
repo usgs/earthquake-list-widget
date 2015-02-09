@@ -1,34 +1,50 @@
 'use strict';
 
-var PAGERList = function () {
-  EqList.apply(this, arguments);
-};
-PAGERList.prototype = Object.create(EqList.prototype);
+var EqList = require('./EqList');
 
-PAGERList.prototype._getClassName = function () {
-  return 'PAGERList';
-};
+var PAGERList = function (container, feed, options) {
+  var _this,
+      _initialize,
 
-PAGERList.prototype._includeEvent = function (e) {
-  return (e.properties.types.indexOf('losspager') !== -1);
-};
+      _autoload;
 
+  options = options || {};
+  _autoload = (options.load !== false);
+  options.load = false;
 
-PAGERList.prototype._getEventValue = function (e) {
-  return '<span class="pager-alertlevel-' + e.properties.alert + '">' +
+  _this = EqList(container, feed, options);
+
+  _initialize = function () {
+    if (_autoload) {
+      _this.load();
+    }
+  };
+
+  _this._getClassName = function () {
+    return 'PAGERList';
+  };
+
+  _this._includeEvent = function (e) {
+    return (e.properties.types.indexOf('losspager') !== -1);
+  };
+
+  _this._getEventValue = function (e) {
+    return '<span class="pager-alertlevel pager-alertlevel-' + e.properties.alert + '">' +
       e.properties.alert[0].toUpperCase() + e.properties.alert.slice(1) +
       '</span>';
-};
+  };
 
-PAGERList.prototype._getEventTitle = function (e) {
-  return e.properties.title;
-};
+  _this._getEventTitle = function (e) {
+    return e.properties.title;
+  };
 
-PAGERList.prototype._getEventAside = function (e) {
-  var romanMMI = this._decToRoman(e.properties.mmi);
+  // Not sure why the MMI works without this but it does.
+  // _this._getEventAside = function (e) {
+  //   var romanMMI = _this._decToRoman(e.properties.mmi);
+  // };
 
-  return 'Max Intensity: <span class="mmi' + romanMMI + '">' +
-      romanMMI + '</span>';
-};
+  _initialize();
+  return _this;
+  };
 
 module.exports = PAGERList;
