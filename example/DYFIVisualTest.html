@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>DYFIList Visual Test</title>
+  <style>
+  * {-moz-box-sizing:border-box;box-sizing:border-box;}
+  .list {
+    float:left;
+    width:50%;
+    padding-right:16px;
+  }
+  </style>
+</head>
+<body>
+  <h1>Did You Feel It?</h1>
+
+  <section class="pastday list">
+    <h2>Matching Results Past 24 Hours</h2>
+    <div id="pastday-list"></div>
+  </section>
+  <section class="pastweek list">
+    <h2>Felt Events Past 7 Days</h2>
+    <div id="pastweek-list"></div>
+  </section>
+
+  <script src="earthquake-list-widget.js"></script>
+  <script>
+  'use strict';
+
+  var DYFIList = require('listwidget/DYFIList');
+  var EqList = require('listwidget/EqList');
+
+  var pastDayList = DYFIList(document.querySelector('#pastday-list'),
+      EqList.ALL_URL_DAY);
+
+  var pastWeekList = DYFIList(document.querySelector('#pastweek-list'),
+      EqList.ALL_URL_WEEK, {
+        includeEvent: function (e) {
+          var p = e.properties;
+          return (p.types.indexOf('dyfi') !== -1 && p.felt !== null && p.felt > 5);
+        }
+      });
+
+  </script>
+</body>
+</html>

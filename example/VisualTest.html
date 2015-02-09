@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Visual Test</title>
+</head>
+<body>
+  <h1>M2.5+ Earthquakes Past Day from USGS Earthquake Website</h1>
+  <div id="list"></div>
+  <script src="earthquake-list-widget.js"></script>
+  <script>
+  'use strict';
+
+  var EqList = require('listwidget/EqList');
+
+  var list = new EqList(document.querySelector('#list'),
+      'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojsonp');
+
+  </script>
+</body>
+</html>
