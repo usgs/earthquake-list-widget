@@ -23,7 +23,6 @@
   "license": "Public Domain",
   "dependencies": {
     "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-htmlmin": "^0.3.0",
     "requirejs": "^2.1.15"
   },
   "devDependencies": {
