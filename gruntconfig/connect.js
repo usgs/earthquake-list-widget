@@ -12,6 +12,8 @@ var connect = {
         config.example,
         config.build + '/' + config.src
       ],
+      livereload: true,
+      open: 'http://localhost:8000/example.html',
       port: 8000
     }
   },
@@ -22,15 +24,18 @@ var connect = {
         config.build + '/' + config.src,
         'node_modules'
       ],
+      open: 'http://localhost:8001/test.html',
       port: 8001
     }
   },
   dist: {
     options: {
-      keepalive: true,
       base: [
+        config.example,
         config.dist
       ],
+      keepalive: true,
+      open: 'http://localhost:8002/example.html',
       port: 8002
     }
   },
