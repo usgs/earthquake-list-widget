@@ -14,7 +14,7 @@ should be placed next to each other (in the same directory) on the web server.
 
 Next, add a container element to your HTML page where you would like to embed
 the widget.
-```
+```html
 ...
 <div id="list-widget-container"></div>
 ...
@@ -22,7 +22,7 @@ the widget.
 
 Now include the ```earthquake-list-widget.js``` script on your page. Be sure
 you correctly reference the path to where you placed the script on your server.
-```
+```html
 ...
 <script src="path-to-js/earthquake-list-widget.js"></script>
 ...
@@ -30,7 +30,7 @@ you correctly reference the path to where you placed the script on your server.
 
 Finally, write a tiny bit of Javascript in order to put the widget into your
 page:
-```
+```html
 <script>
 var EqList = require('listwidget/EqList');
 EqList({
