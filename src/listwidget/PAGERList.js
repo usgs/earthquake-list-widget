@@ -1,50 +1,68 @@
 'use strict';
 
-var EqList = require('./EqList');
+var EqList = require('listwidget/EqList'),
+    Util = require('listwidget/Util');
 
-var PAGERList = function (container, feed, options) {
-  var _this,
-      _initialize,
 
-      _autoload;
+var PAGERList = function (params) {
+  var _this;
 
-  options = options || {};
-  _autoload = (options.load !== false);
-  options.load = false;
 
-  _this = EqList(container, feed, options);
+  _this = EqList(params);
 
-  _initialize = function () {
-    if (_autoload) {
-      _this.load();
-    }
+
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#getClassName
+   */
+   _this.getClassName = function () {
+    return 'eqlist pagerlist';
   };
 
-  _this._getClassName = function () {
-    return 'PAGERList';
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#getEventAside
+   */
+   _this.getEventAside = function (e) {
+    var romanMmi = Util.decToRoman(e.properties.mmi);
+
+    return '<span class="roman mmi' + romanMmi + '">' + romanMmi + '</span>';
   };
 
-  _this._includeEvent = function (e) {
-    return (e.properties.types.indexOf('losspager') !== -1);
-  };
-
-  _this._getEventValue = function (e) {
-    return '<span class="pager-alertlevel pager-alertlevel-' + e.properties.alert + '">' +
-      e.properties.alert[0].toUpperCase() + e.properties.alert.slice(1) +
-      '</span>';
-  };
-
-  _this._getEventTitle = function (e) {
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#getEventTitle
+   */
+   _this.getEventTitle = function (e) {
     return e.properties.title;
   };
 
-  // Not sure why the MMI works without this but it does.
-  // _this._getEventAside = function (e) {
-  //   var romanMMI = _this._decToRoman(e.properties.mmi);
-  // };
-
-  _initialize();
-  return _this;
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#getEventValue
+   */
+   _this.getEventValue = function (e) {
+    return '<span class="pager-alertlevel pager-alertlevel-' +
+        e.properties.alert + '">' + e.properties.alert[0].toUpperCase() +
+        e.properties.alert.slice(1) + '</span>';
   };
+
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#includeEvent
+   */
+   _this.includeEvent = function (e) {
+    return (e.properties.types.indexOf('losspager') !== -1);
+  };
+
+
+  params = null;
+  return _this;
+};
 
 module.exports = PAGERList;
