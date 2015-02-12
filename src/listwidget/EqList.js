@@ -1,13 +1,12 @@
 'use strict';
 
+var Util = require('listwidget/Util');
+
+
 var _BASE_URL = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/',
     _LOADED_CSS = {},
     _REGISTERED_PARSERS = {},
-    _ROMANS = null,
     _VALIDATE_URL = true;
-
-_ROMANS = ['I', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX',
-        'X'];
 
 
 var SIG_URL_MONTH = _BASE_URL + 'significant_month.geojsonp',
@@ -94,7 +93,31 @@ var __loadCss = function (params) {
   }
 };
 
-
+/**
+ * A simplified API for embedding a list of earthquakes on a web page.
+ *
+ * @param container {DOMElement}
+ *      A container into which the list should be embedded.
+ * @param feed {String}
+ *      The URL to the GeoJSON feed containing earthquake data.
+ *
+ * @param compareEvents {Function} Optional
+ *      A comparator function suitable for sorting event objects as defined in
+ *      the GeoJSON feed. This method should conform to the Array.sort
+ *      compareFunction specification. If not specified, events are sorted by
+ *      event time, most recent first.
+ * @param includeEvent {Function} Optional
+ *      A function that should accept an event object as defined in the GeoJSON
+ *      feed and returns true if the event should be listed, false otherwise.
+ *      If not specified, all events in the feed are listed.
+ * @param load {Boolean} Optional
+ *      Whether or not to auto-load the list of earthquakes upon instantiation.
+ *      If not specified, the list is automatically loaded. If specified as
+ *      false, events can be manually loaded by calling the ```load``` method.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+ *
+ */
 var EqList = function (params) {
   var _this,
       _initialize,
@@ -115,6 +138,10 @@ var EqList = function (params) {
 
   _this = {};
 
+  /**
+   * @constructor
+   *
+   */
   _initialize = function (params) {
     _container = params.container || document.createElement('div');
     _feed = params.feed || SIG_URL_MONTH;
@@ -128,7 +155,15 @@ var EqList = function (params) {
     }
   };
 
-
+  /**
+   * @PrivateMethod
+   *
+   * @param message {String}
+   *      The message to display in the error.
+   *
+   * @return {DOMElement}
+   *      An error DOM element containing the message to display.
+   */
   _createError = function (message) {
     var p = document.createElement('p');
 
@@ -138,10 +173,22 @@ var EqList = function (params) {
     return p;
   };
 
+  /**
+   * @PrivateMethod
+   *
+   */
   _emptyContainer = function () {
     _container.innerHTML = '';
   };
 
+  /**
+   * @PrivateMethod
+   *
+   * Executes an asynchronous JSONP request for the configured feed. Called
+   * internally by the ```load``` method.
+   *
+   * @see EqList#load
+   */
   _fetchList = function () {
     var s = document.createElement('script');
         s.src = _feed;
@@ -154,8 +201,10 @@ var EqList = function (params) {
   };
 
   /**
-   * Filters the given array of events based on the result of the _includeEvent
-   * method.
+   * @PrivateMethod
+   *
+   * Filters the given array of events based on the result of the
+   * ```includeEvent``` method.
    *
    * Note: We filter separate from rendering such that:
    *   (a) if no events pass the filter, we can still show the no events
@@ -173,7 +222,7 @@ var EqList = function (params) {
         i = events.length - 1,
         includeEvent;
 
-    includeEvent = _includeEvent || _this._includeEvent;
+    includeEvent = _includeEvent || _this.includeEvent;
 
     for (; i >= 0; i--) {
       if (!includeEvent(events[i])) {
@@ -184,6 +233,13 @@ var EqList = function (params) {
     return filtered;
   };
 
+  /**
+   * @PrivateMethod
+   *
+   * Puts a loading message into the configured container for this list
+   * instance.
+   *
+   */
   _generateLoading = function () {
     var loading = _container.appendChild(document.createElement('p'));
     loading.className = 'eqlist-loading';
@@ -194,6 +250,18 @@ var EqList = function (params) {
       'source data</a>.';
   };
 
+  /**
+   * @PrivateMethod
+   *
+   * Accepts input data (a GeoJSON feed), filters and sorts the contained
+   * events, and renders them in a list format into the configured container.
+   *
+   * If no events remain to be rendered after filtering, a message indiciating
+   * no events found is displayed instead.
+   *
+   * @param data {GeoJSON}
+   *      The data containing events to render.
+   */
   _render = function (data) {
     var events = _filterEvents(data.features),
         i = 0,
@@ -210,21 +278,26 @@ var EqList = function (params) {
     events.sort(_compareEvents || _this._compareEvents);
 
     for (i = 0; i < len; i++) {
-      markup.push(_this._getEventMarkup(events[i]));
+      markup.push(_this.getEventMarkup(events[i]));
     }
 
     // Append to the DOM
     _emptyContainer();
     list = document.createElement('ol');
-    list.className = 'eqlist ' + _this._getClassName().toLowerCase();
+    list.className = _this.getClassName().toLowerCase();
     list.innerHTML = markup.join('');
     _container.appendChild(list);
   };
 
 
   /**
+   * @APIMethod - May be overriden by sub-class, or by constructor parameter.
+   *
    * Compares the given events for sorting purposes. This implementation sorts
    * by time, newest first.
+   *
+   * Note: This method can be overriden at run time if the caller specifies
+   * a custom compareEvents method in the constructor parameters.
    *
    * @param e1 {Object}
    *      A single event feature object for the first event to compare.
@@ -236,60 +309,40 @@ var EqList = function (params) {
    *      Zero if e1 == e2
    *      Greater than zero if e1 < e2
    */
-  _this._compareEvents = function (e1, e2) {
+  _this.compareEvents = function (e1, e2) {
     return (e2.properties.time - e1.properties.time);
   };
 
-  _this._decToRoman = function (dec) {
-    var intval = parseInt(dec||0, 10);
-
-    if (intval < 0) {
-      intval = 0;
-    }
-
-    if (intval > (_ROMANS.length - 1)) {
-      intval = _ROMANS.length - 1;
-    }
-
-    return _ROMANS[intval];
-  };
-
-  _this._formatDate = function (stamp) {
-    var t = new Date(stamp),
-        y = t.getUTCFullYear(),
-        m = t.getUTCMonth()+1,
-        d = t.getUTCDate(),
-        h = t.getUTCHours(),
-        i = t.getUTCMinutes(),
-        s = t.getUTCSeconds();
-
-    if (m < 10) { m = '0' + m; }
-    if (d < 10) { d = '0' + d; }
-    if (h < 10) { h = '0' + h; }
-    if (i < 10) { i = '0' + i; }
-    if (s < 10) { s = '0' + s; }
-
-    return ''+y+'-'+m+'-'+d+' '+h+':'+i+':'+s+' UTC';
-  };
-
-  _this._formatDepth = function (depth) {
-    return depth.toFixed(1);
-  };
-
-  _this._formatMagnitude = function (magnitude) {
-    return magnitude.toFixed(1);
-  };
-
-  _this._getClassName = function () {
+  /**
+   * @APIMethod - May be overriden by sub-class.
+   *
+   * @return {String}
+   *      A space-separated string of CSS class names to add to the list
+   *      embedded list.
+   */
+  _this.getClassName = function () {
     return 'EqList';
   };
 
-  _this._getEventAside = function (e) {
-    return _this._formatDepth(e.geometry.coordinates[2]) + ' km deep';
+  /**
+   * @APIMethod - May be overriden by sub-class.
+   *
+   * @param e {Object}
+   *      A single event feature from the raw GeoJSON response.
+   *
+   * @return {String}
+   *      The content to render as "aside" text.
+   */
+  _this.getEventAside = function (e) {
+    return Util.formatDepth(e.geometry.coordinates[2]) + ' km deep';
   };
 
   /**
-   * Gets the markup for one event.
+   * @APIMethod - May be overriden by sub-class.
+   *
+   * Gets the markup for one event. Default implementation creates a list item
+   * and uses the ```getEventValue```, ```getEventTitle```,
+   * ```getEventSubtitle```, and ```getEventAside```. 
    *
    * @param e {Object}
    *      A single event feature from the raw GeoJSON response.
@@ -297,33 +350,60 @@ var EqList = function (params) {
    * @return {String}
    *      A string representing the markup for a single event feature.
    */
-  _this._getEventMarkup = function (e) {
+  _this.getEventMarkup = function (e) {
     var p = e.properties;
 
     return [
       '<li class="eqitem">',
-        '<span class="value">', _this._getEventValue(e), '</span>',
+        '<span class="value">', _this.getEventValue(e), '</span>',
         '<a class="title" href="', p.url, '">',
-          _this._getEventTitle(e),
+          _this.getEventTitle(e),
         '</a>',
-        '<span class="subtitle">', _this._getEventSubtitle(e), '</span>',
+        '<span class="subtitle">', _this.getEventSubtitle(e), '</span>',
         '<span class="aside">',
-          _this._getEventAside(e),
+          _this.getEventAside(e),
         '</span>',
       '</li>'
     ].join('');
   };
 
-  _this._getEventSubtitle = function (e) {
-    return _this._formatDate(e.properties.time);
+  /**
+   * @APIMethod - May be overriden by sub-class.
+   *
+   * @param e {Object}
+   *      A single event feature from the raw GeoJSON response.
+   *
+   * @return {String}
+   *      The content to render as "subtitle" text.
+   */
+  _this.getEventSubtitle = function (e) {
+    return Util.formatDate(e.properties.time);
   };
 
-  _this._getEventTitle = function (e) {
+  /**
+   * @APIMethod - May be overriden by sub-class.
+   *
+   * @param e {Object}
+   *      A single event feature from the raw GeoJSON response.
+   *
+   * @return {String}
+   *      The content to render as "title" text.
+   */
+  _this.getEventTitle = function (e) {
     return e.properties.place;
   };
 
-  _this._getEventValue = function (e) {
-    return _this._formatMagnitude(e.properties.mag);
+  /**
+   * @APIMethod - May be overriden by sub-class.
+   *
+   * @param e {Object}
+   *      A single event feature from the raw GeoJSON response.
+   *
+   * @return {String}
+   *      The content to render as "value" text.
+   */
+  _this.getEventValue = function (e) {
+    return Util.formatMagnitude(e.properties.mag);
   };
 
   /**
@@ -335,11 +415,16 @@ var EqList = function (params) {
    * @return {Boolean}
    *      True if the event should be rendered in the list. False otherwise.
    */
-  _this._includeEvent = function (/*event*/) {
+  _this.includeEvent = function (/*event*/) {
     return true;
   };
 
-
+  /**
+   * Loads (or re-loads) the configured feed. Once the feed is loaded, the
+   * returned data is automatically rendered in the configured container.
+   * Called during construction unless params.load is set to false.
+   *
+   */
   _this.load = function () {
     __loadCss({url: _css || __findCss({name: 'earthquake-list-widget'})});
     _generateLoading();
@@ -353,18 +438,48 @@ var EqList = function (params) {
 };
 
 /**
+ * @PublicStaticMethod
  *
+ * Determines whether or not to validate the URL of the returned data when
+ * before notifying registered parsers. If validation is disabled, all currently
+ * parsers are notified of returned data regardless of whether or not that
+ * parser was interested in the returne data. If set to true, only parsers that
+ * are registered with the URL of the returned data will be notified.
+ *
+ * Note: Each registered parser is unregistered after the first time it is
+ * notified of returned data. Thus, setting this to false is potentially
+ * dangerous if multiple EqList instances are put on a single page.
+ *
+ * If this method is never called, default behavior is to validate URLs.
+ *
+ * @param validateUrl {Boolean}
+ *      True if URLs should be validated, false otherwise.
  */
 EqList.setValidateUrl = function (validateUrl) {
   _VALIDATE_URL = validateUrl;
 };
 
+/**
+ * @PublicStaticMethod
+ *
+ * Unregisters a registered listener.
+ *
+ * @param key {String}
+ *      The identifier for the listener to unregister.
+ */
 EqList.unregisterListener = function (key) {
   _REGISTERED_PARSERS[key] = null;
   delete _REGISTERED_PARSERS[key];
 };
 
-
+/**
+ * @GlobalMethod
+ *
+ * This method is the default JSONP method used on realtime data feeds.
+ *
+ * @param data {GeoJSON}
+ *      The data returned by the JSONP request.
+ */
 window.eqfeed_callback = function (data) {
   var url = data.metadata.url,
       key = null;
