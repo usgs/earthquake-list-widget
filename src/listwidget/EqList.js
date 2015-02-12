@@ -93,6 +93,7 @@ var __loadCss = function (params) {
   }
 };
 
+
 /**
  * A simplified API for embedding a list of earthquakes on a web page.
  *
@@ -437,6 +438,7 @@ var EqList = function (params) {
   return _this;
 };
 
+
 /**
  * @PublicStaticMethod
  *
@@ -472,6 +474,7 @@ EqList.unregisterListener = function (key) {
   delete _REGISTERED_PARSERS[key];
 };
 
+
 /**
  * @GlobalMethod
  *
@@ -496,6 +499,7 @@ window.eqfeed_callback = function (data) {
     }
   }
 };
+
 
 // Expose these as statics for external usage
 EqList.SIG_URL_MONTH = SIG_URL_MONTH;

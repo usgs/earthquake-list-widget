@@ -3,6 +3,7 @@
 var EqList = require('listwidget/EqList'),
     Util = require('listwidget/Util');
 
+
 var ShakeMapList = function (params) {
   var _this;
 
