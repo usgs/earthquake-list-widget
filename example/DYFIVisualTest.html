@@ -27,20 +27,24 @@
   <script>
   'use strict';
 
-  var DYFIList = require('listwidget/DYFIList');
-  var EqList = require('listwidget/EqList');
+  var DYFIList = require('listwidget/DYFIList'),
+      EqList = require('listwidget/EqList');
 
-  var pastDayList = DYFIList(document.querySelector('#pastday-list'),
-      EqList.ALL_URL_DAY);
+  // All events in past day
+  DYFIList({
+    container: document.querySelector('#pastday-list'),
+    feed: EqList.ALL_URL_DAY
+  });
 
-  var pastWeekList = DYFIList(document.querySelector('#pastweek-list'),
-      EqList.ALL_URL_WEEK, {
-        includeEvent: function (e) {
-          var p = e.properties;
-          return (p.types.indexOf('dyfi') !== -1 && p.felt !== null && p.felt > 5);
-        }
-      });
-
+  // All events in past week, filtered to only those with > 5 felt reports
+  DYFIList({
+    container: document.querySelector('#pastweek-list'),
+    feed: EqList.ALL_URL_WEEK,
+    includeEvent: function (e) {
+      var p = e.properties;
+      return (p.types.indexOf('dyfi') !== -1 && p.felt !== null && p.felt > 5);
+    }
+  });
   </script>
 </body>
 </html>

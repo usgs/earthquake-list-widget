@@ -1,50 +1,64 @@
 'use strict';
 
-var EqList = require('./EqList');
+var EqList = require('listwidget/EqList'),
+    Util = require('listwidget/Util');
 
-var DYFIList = function (container, feed, options) {
-  var _this,
-      _initialize,
+var DYFIList = function (params) {
+  var _this;
 
-      _autoload;
 
-  options = options || {};
-  _autoload = (options.load !== false);
-  options.load = false;
+  _this = EqList(params);
 
-  _this = EqList(container, feed, options);
 
-  _initialize = function () {
-    if (_autoload) {
-      _this.load();
-
-    }
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#getClassName
+   */
+   _this.getClassName = function () {
+    return 'eqlist dyfilist';
   };
 
-  _this._getClassName = function () {
-    return 'DYFIList';
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#getEventAside
+   */
+   _this.getEventAside = function (e) {
+    return (e.properties.felt||0) + ' responses';
   };
 
-  _this._includeEvent = function (e) {
-    return (e.properties.types.indexOf('dyfi') !== -1);
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#getEventTitle
+   */
+   _this.getEventTitle = function (e) {
+    return e.properties.title;
   };
 
-
-  _this._getEventValue = function (e) {
-    var romanCdi = _this._decToRoman(e.properties.cdi);
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#getEventValue
+   */
+   _this.getEventValue = function (e) {
+    var romanCdi = Util.decToRoman(e.properties.cdi);
 
     return '<span class="roman mmi' + romanCdi + '">' + romanCdi + '</span>';
   };
 
-  _this._getEventTitle = function (e) {
-    return e.properties.title;
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#includeEvent
+   */
+   _this.includeEvent = function (e) {
+    return (e.properties.types.indexOf('dyfi') !== -1);
   };
 
-  _this._getEventAside = function (e) {
-    return (e.properties.felt||0) + ' responses';
-  };
 
-  _initialize();
+  params = null;
   return _this;
 };
 
