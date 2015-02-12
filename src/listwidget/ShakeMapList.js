@@ -1,48 +1,64 @@
 'use strict';
 
-var EqList = require('./EqList');
+var EqList = require('listwidget/EqList'),
+    Util = require('listwidget/Util');
 
-var ShakeMapList = function (container, feed, options) {
-  var _this,
-      _initialize,
+var ShakeMapList = function (params) {
+  var _this;
 
-      _autoload;
 
-  options = options || {};
-  _autoload = (options.load !== false);
-  options.load = false;
+  _this = EqList(params);
 
-  _this = EqList(container, feed, options);
 
-  _initialize = function () {
-    if (_autoload) {
-      _this.load();
-    }
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#getClassName
+   */
+   _this.getClassName = function () {
+    return 'eqlist shakemaplist';
   };
 
-  _this._getClassName = function () {
-    return 'ShakeMapList';
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#getEventAside
+   */
+   _this.getEventAside = function (e) {
+    return e.id;
   };
 
-  _this._includeEvent = function (e) {
-    return (e.properties.types.indexOf('shakemap') !== -1);
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#getEventTitle
+   */
+   _this.getEventTitle = function (e) {
+    return e.properties.title;
   };
 
-  _this._getEventValue = function (e) {
-    var romanMmi = this._decToRoman(e.properties.mmi);
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#getEventValue
+   */
+   _this.getEventValue = function (e) {
+    var romanMmi = Util.decToRoman(e.properties.mmi);
 
     return '<span class="roman mmi' + romanMmi + '">' + romanMmi + '</span>';
   };
 
-  _this._getEventTitle = function (e) {
-    return e.properties.title;
+  /**
+   * @APIMethod
+   *
+   * @Overrides EqList#includeEvent
+   */
+   _this.includeEvent = function (e) {
+    return (e.properties.types.indexOf('shakemap') !== -1);
   };
 
-  _this._getEventAside = function (e) {
-    return e.id;
-  };
 
-  _initialize();
+  params = null;
   return _this;
 };
 

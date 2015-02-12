@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <title>PagerList Visual Test</title>
+  <title>ShakeMapList Visual Test</title>
   <style>
   * {-moz-box-sizing:border-box;box-sizing:border-box;}
   </style>
@@ -14,11 +14,13 @@
   <script>
   'use strict';
 
-  var ShakeMapList = require('listwidget/ShakeMapList');
-  var EqList = require('listwidget/EqList');
+  var EqList = require('listwidget/EqList'),
+      ShakeMapList = require('listwidget/ShakeMapList');
 
-  var pastDayList = new ShakeMapList(document.querySelector('#list'),
-      EqList.ALL_URL_WEEK);
+  ShakeMapList({
+    container: document.querySelector('#list'),
+    feed: EqList.ALL_URL_WEEK
+  });
 
   </script>
 </body>
