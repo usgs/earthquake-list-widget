@@ -1,0 +1,10 @@
+* {
+  -moz-box-sizing:border-box;
+  box-sizing:border-box;
+}
+
+.list {
+  float:left;
+  width:50%;
+  padding-right:16px;
+}

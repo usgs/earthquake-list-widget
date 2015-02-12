@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Default Earthquake List</title>
+  <link rel="stylesheet" href="example.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=0"/>
+</head>
+<body>
+  <h1>Default Earthquake List</h1>
+
+  <h2>Other Formats</h2>
+  <ul>
+    <li><a href="DYFIList.html">DYFI List</a></li>
+    <li><a href="ShakeMapList.html">ShakeMap List</a></li>
+    <li><a href="PAGERList.html">PAGER List</a></li>
+  </ul>
+
+  <section class="list">
+    <h2>M2.5+ Earthquakes Worldwide, Past Day</h2>
+    <div id="list"></div>
+  </section>
+
+  <script src="earthquake-list-widget.js"></script>
+  <script>
+  'use strict';
+
+  var EqList = require('listwidget/EqList');
+
+  EqList({
+    container: document.querySelector('#list'),
+    feed: EqList.M25_URL_DAY
+  });
+
+  </script>
+</body>
+</html>
