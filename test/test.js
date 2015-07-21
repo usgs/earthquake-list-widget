@@ -6,6 +6,7 @@ mocha.reporter('html');
 
 // Add each test class here as they are implemented
 require('./spec/EqListTest');
+require('./spec/PolygonListTest');
 
 if (window.mochaPhantomJS) {
   window.mochaPhantomJS.run();

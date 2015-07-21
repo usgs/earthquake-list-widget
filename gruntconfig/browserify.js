@@ -6,6 +6,7 @@ var EXPORTS = [
   'listwidget/DYFIList',
   'listwidget/EqList',
   'listwidget/PAGERList',
+  'listwidget/PolygonList',
   'listwidget/ShakeMapList'
 ];
 
