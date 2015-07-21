@@ -326,7 +326,7 @@ var EqList = function (params) {
   };
 
   /**
-   * @APIMethod - May be overriden by sub-class.
+   * @APIMethod - May be overridden by sub-class.
    *
    * @param e {Object}
    *      A single event feature from the raw GeoJSON response.
@@ -339,11 +339,24 @@ var EqList = function (params) {
   };
 
   /**
-   * @APIMethod - May be overriden by sub-class.
+   * @APIMethod - May be overridden by sub-class.
+   *
+   * @param e {Object}
+   *      A single event feature from the raw GeoJSON response.
+   *
+   * @return {String}
+   *      The url to use for the link to event details.
+   */
+  _this.getEventLink = function (e) {
+    return e.properties.url;
+  };
+
+  /**
+   * @APIMethod - May be overridden by sub-class.
    *
    * Gets the markup for one event. Default implementation creates a list item
    * and uses the ```getEventValue```, ```getEventTitle```,
-   * ```getEventSubtitle```, and ```getEventAside```. 
+   * ```getEventSubtitle```, and ```getEventAside```.
    *
    * @param e {Object}
    *      A single event feature from the raw GeoJSON response.
@@ -352,12 +365,10 @@ var EqList = function (params) {
    *      A string representing the markup for a single event feature.
    */
   _this.getEventMarkup = function (e) {
-    var p = e.properties;
-
     return [
       '<li class="eqitem">',
         '<span class="value">', _this.getEventValue(e), '</span>',
-        '<a class="title" href="', p.url, '">',
+        '<a class="title" href="', _this.getEventLink(e), '">',
           _this.getEventTitle(e),
         '</a>',
         '<span class="subtitle">', _this.getEventSubtitle(e), '</span>',
@@ -369,7 +380,7 @@ var EqList = function (params) {
   };
 
   /**
-   * @APIMethod - May be overriden by sub-class.
+   * @APIMethod - May be overridden by sub-class.
    *
    * @param e {Object}
    *      A single event feature from the raw GeoJSON response.
@@ -382,7 +393,7 @@ var EqList = function (params) {
   };
 
   /**
-   * @APIMethod - May be overriden by sub-class.
+   * @APIMethod - May be overridden by sub-class.
    *
    * @param e {Object}
    *      A single event feature from the raw GeoJSON response.
@@ -395,7 +406,7 @@ var EqList = function (params) {
   };
 
   /**
-   * @APIMethod - May be overriden by sub-class.
+   * @APIMethod - May be overridden by sub-class.
    *
    * @param e {Object}
    *      A single event feature from the raw GeoJSON response.
