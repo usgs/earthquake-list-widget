@@ -1,20 +1,20 @@
 .pagerlist > .eqitem {
-  padding-left: 80px;
+  padding-left: 5em;
 
   > .value {
-    width: 80px;
+    width: 5em;
     > .pager-alertlevel {
-      padding: 2px 4px;
-      text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+      padding: 0.125em 0.25em;
+      text-shadow: 0.062em 0.062em 0 rgba(255,255,255,0.3);
     }
   }
 
   > .subtitle {
-    left: 80px;
+    left: 5em;
   }
 
   > .aside > .mmi {
-    padding: 1px 3px;
+    padding: 0.062em 0.187em;
   }
 
   .pager-alertlevel-pending{

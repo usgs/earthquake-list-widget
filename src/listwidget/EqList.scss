@@ -4,45 +4,48 @@
   padding: 0;
 
   > .eqitem {
-    border-bottom: 1px solid #EEE;
+    border-bottom: .06em solid #EEE;
     color: #111;
     margin: 0;
-    padding: 5px 5px 1.5em 40px;
+    padding: 0.33em 0.33em 1.5em 2.5em;
     position: relative;
 
     > .value {
       font-weight: bold;
       font-size: larger;
-      height: 40px;
-      line-height: 40px;
+      height: 2.5em;
+      line-height: 2.5em;
       position: absolute;
       text-align: center;
       top: 0; left: 0;
-      width: 40px;
+      width: 2.5em;
     }
 
     > .title {
       display: block;
-      margin-bottom: 2px;
+      margin-bottom: 0.125em;
       overflow: hidden;
+      padding-left: 1em;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
     > .subtitle {
-      bottom: 5px;
+      bottom: .33em;
       color: #666;
       display: block;
-      left: 40px;
+      left: 2.5em;
       position: absolute;
+      padding-left: 1em;
     }
 
     > .aside {
-      bottom: 5px;
+      bottom: .33em;
       color: #666;
       display: block;
       position: absolute;
-      right: 5px;
+      right: .33em;
+
     }
   }
 }
@@ -50,7 +53,7 @@
 /* Spinner GIF */
 .eqlist-loading {
   background-image: url('data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==');
-  background-position: 0 4px;
+  background-position: 0 .25em;
   background-repeat: no-repeat;
-  padding-left: 20px;
+  padding-left: 1.25em;
 }
