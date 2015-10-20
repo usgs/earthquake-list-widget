@@ -1,22 +1,61 @@
 .eqlist {
   .roman {
-    display:block;
-    line-height:1.0;
-    width:auto;
-    height:auto;
-    padding:2px 4px;
-    margin:12px 6px 0 6px;
+    display: block;
+    height: auto;
+    line-height: 1.0;
+    margin: 12px 6px 0 6px;
+    padding: 2px 4px;
+    width: auto;
   }
 
-  .mmiI{color:#000!important;background-color:#FFF!important;
-      box-shadow:0 0 1px #666}
-  .mmiII{color:#000!important;background-color:#ACD8E9!important}
-  .mmiIII{color:#000!important;background-color:#ACD8E9!important}
-  .mmiIV{color:#000!important;background-color:#83D0DA!important}
-  .mmiV{color:#000!important;background-color:#7BC87F!important}
-  .mmiVI{color:#000!important;background-color:#F9F518!important}
-  .mmiVII{color:#000!important;background-color:#FAC611!important}
-  .mmiVIII{color:#000!important;background-color:#FA8A11!important}
-  .mmiIX{color:#000!important;background-color:#F7100C!important}
-  .mmiX{color:#000!important;background-color:#C80F0A!important}
+  .mmiI{
+    background-color: #FFF!important;
+    box-shadow: 0 0 1px #666;
+    color: #000!important;
+  }
+
+  .mmiII{
+    background-color: #ACD8E9!important;
+    color: #000!important;
+  }
+
+  .mmiIII{
+    background-color: #ACD8E9!important;
+    color: #000!important;
+  }
+
+  .mmiIV{
+    background-color: #83D0DA!important;
+    color: #000!important;
+  }
+
+  .mmiV{
+    background-color: #7BC87F!important;
+    color: #000!important;
+  }
+
+  .mmiVI{
+    background-color: #F9F518!important;
+    color: #000!important;
+  }
+
+  .mmiVII{
+    background-color: #FAC611!important;
+    color: #000!important;
+  }
+
+  .mmiVIII{
+    background-color: #FA8A11!important;
+    color: #000!important;
+  }
+
+  .mmiIX{
+    background-color: #F7100C!important;
+    color: #000!important;
+  }
+
+  .mmiX{
+    background-color: #C80F0A!important;
+    color: #000!important;
+  }
 }
