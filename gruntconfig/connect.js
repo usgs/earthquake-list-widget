@@ -43,7 +43,7 @@ var connect = {
     {
       context: '/theme/',
       host: 'localhost',
-      port: 8033,
+      port: config.templatePort,
       rewrite: {
         '^/theme': ''
       }
@@ -56,10 +56,10 @@ var connect = {
         config.example,
         config.build + '/' + config.src
       ],
-      livereload: true,
+      livereload: config.liveReloadPort,
       middleware: addMiddleware,
       open: 'http://localhost:8030/example.php',
-      port: 8030
+      port: config.examplePort
     }
   },
   test: {
@@ -69,8 +69,8 @@ var connect = {
         config.build + '/' + config.test,
         'node_modules'
       ],
-      open: 'http://localhost:8031/test.html',
-      port: 8031
+      open: 'http://localhost:' + config.testPort + '/test.html',
+      port: config.testPort
     }
   },
   dist: {
@@ -80,15 +80,15 @@ var connect = {
         config.example
       ],
       keepalive: true,
-      open: 'http://localhost:8032/example.html',
-      port: 8032
+      open: 'http://localhost:' + config.distPort + '/example.html',
+      port: config.distPort
     }
   },
 
   template: {
     options: {
       base: ['node_modules/hazdev-template/dist/htdocs'],
-      port: 8033
+      port: config.templatePort
     }
   }
 };
