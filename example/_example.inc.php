@@ -5,6 +5,8 @@ if (!isset($TEMPLATE)) {
   $pageUrl = str_replace(
       strstr($_SERVER['REQUEST_URI'], '?'), '',
       $_SERVER['REQUEST_URI']);
+  $templateLink = '?template=' .
+      (isset($_GET['template']) ? $_GET['template'] : '');
   if ($useTemplate) {
     include 'template.inc.php';
   } else {
