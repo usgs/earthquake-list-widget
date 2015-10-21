@@ -14,6 +14,8 @@ var config = {
 
   tasks: [
     'grunt-browserify',
+    'grunt-connect-proxy',
+    'grunt-connect-rewrite',
     'grunt-contrib-clean',
     'grunt-contrib-compass',
     'grunt-contrib-connect',
