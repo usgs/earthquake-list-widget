@@ -1,10 +1,10 @@
 {
-  "name": "earthquake-list",
+  "name": "earthquake-list-widget",
   "version": "0.1.0",
   "homepage": "http://earthquake.usgs.gov/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/usgs/earthquake-list.git"
+    "url": "https://github.com/usgs/earthquake-list-widget.git"
   },
   "description": "A javascript package for displaying recent earthquake information on a webpage.",
   "author": {
