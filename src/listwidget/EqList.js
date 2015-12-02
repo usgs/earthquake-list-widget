@@ -335,7 +335,7 @@ var EqList = function (params) {
    *      The content to render as "aside" text.
    */
   _this.getEventAside = function (e) {
-    return Util.formatDepth(e.geometry.coordinates[2]) + ' km deep';
+    return Util.formatDepth(e.geometry.coordinates[2]) + ' km';
   };
 
   /**
@@ -343,7 +343,7 @@ var EqList = function (params) {
    *
    * Gets the markup for one event. Default implementation creates a list item
    * and uses the ```getEventValue```, ```getEventTitle```,
-   * ```getEventSubtitle```, and ```getEventAside```. 
+   * ```getEventSubtitle```, and ```getEventAside```.
    *
    * @param e {Object}
    *      A single event feature from the raw GeoJSON response.
