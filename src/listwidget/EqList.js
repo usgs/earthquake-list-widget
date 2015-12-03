@@ -360,10 +360,13 @@ var EqList = function (params) {
         '<a class="title" href="', p.url, '">',
           _this.getEventTitle(e),
         '</a>',
-        '<span class="subtitle">', _this.getEventSubtitle(e), '</span>',
-        '<span class="aside">',
-          _this.getEventAside(e),
-        '</span>',
+        '<div class="row">',
+          '<span class="subtitle column mobile-three-of-four">',
+              _this.getEventSubtitle(e), '</span>',
+          '<span class="aside column mobile-one-of-four">',
+              _this.getEventAside(e),
+          '</span>',
+        '</div>',
       '</li>'
     ].join('');
   };
