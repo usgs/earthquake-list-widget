@@ -2,7 +2,6 @@
 
 if (!isset($TEMPLATE)) {
   $TITLE = 'DYFI List';
-  $HEAD = '<link rel="stylesheet" href="earthquake-list-widget.css"/>';
   $FOOT = '<script src="earthquake-list-widget.js"></script>' .
       '<script src="DYFIList.js"></script>';
 }
