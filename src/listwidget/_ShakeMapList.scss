@@ -1,6 +1,10 @@
 .shakemaplist > .eqitem {
+  padding: .75em .5em .75em 3.5em;
+
   > .value {
     line-height: 4.8;
+    padding: 0 0.5em;
+
     >.roman {
       line-height: 1;
     }
