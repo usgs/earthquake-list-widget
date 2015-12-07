@@ -24,6 +24,10 @@
 
   > .row > .aside {
     text-align: right;
+    line-height: 1.3;
+    > .roman {
+      padding: 0;
+    }
   }
 }
 
