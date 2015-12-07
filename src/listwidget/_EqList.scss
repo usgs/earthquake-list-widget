@@ -4,48 +4,43 @@
   padding: 0;
 
   > .eqitem {
-    border-bottom: .06em solid #EEE;
-    color: #111;
-    margin: 0;
-    padding: 0.33em 0.33em 1.5em 2.5em;
+    padding: .75em .5em .75em 2.5em;
     position: relative;
 
+    + .eqitem {
+      border-top: 1px solid #ddd;
+    }
+
     > .value {
-      font-weight: bold;
-      font-size: larger;
-      height: 2.5em;
-      line-height: 2.5em;
+      left: 0em;
+      line-height: 3.9;
       position: absolute;
       text-align: center;
-      top: 0; left: 0;
-      width: 2.5em;
+      top: 0em;
+      width: 2em;
     }
 
     > .title {
       display: block;
-      margin-bottom: 0.125em;
       overflow: hidden;
-      padding-left: 1em;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    > .subtitle {
-      bottom: .33em;
-      color: #666;
-      display: block;
-      left: 2.5em;
-      position: absolute;
-      padding-left: 1em;
-    }
+    > .row {
+      font-size: 0.8em;
 
-    > .aside {
-      bottom: .33em;
-      color: #666;
-      display: block;
-      position: absolute;
-      right: .33em;
+      > .subtitle,
+      > .aside {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
+      > .aside {
+        text-align: right;
+      }
     }
   }
 }

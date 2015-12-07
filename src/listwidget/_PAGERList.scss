@@ -1,25 +1,34 @@
 .pagerlist > .eqitem {
-  padding-left: 5em;
+  padding-left: 6em;
 
   > .value {
-    width: 5em;
+    text-align: center;
+    width: 5.5em;
+    line-height: 4.4;
 
     > .pager-alertlevel {
+      display: inline-block;
+      line-height: 1;
+      overflow: hidden;
       padding: 0.125em 0.25em;
       text-shadow: 0.062em 0.062em 0 rgba(255,255,255,0.3);
+      white-space: nowrap;
+      width: 5em;
     }
   }
 
-  > .subtitle {
-    left: 5em;
+  > .row {
+    font-size: 0.75em;
   }
 
-  > .aside > .mmi {
-    padding: 0.062em 0.187em;
+  > .row > .aside {
+    text-align: right;
+    line-height: 1.3;
+    > .roman {
+      padding: 0;
+    }
   }
-
 }
-
 
 .pager-alertlevel-pending {
   background-color: #fff;
