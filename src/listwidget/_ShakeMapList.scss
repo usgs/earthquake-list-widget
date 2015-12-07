@@ -1,7 +1,8 @@
-.shakemaplist > .eqitem > .value {
-  line-height: 4.8;
-}
-
-.shakemaplist > .eqitem > .value > .roman {
-  line-height: 1;
+.shakemaplist > .eqitem {
+  > .value {
+    line-height: 4.8;
+    >.roman {
+      line-height: 1;
+    }
+  }
 }
