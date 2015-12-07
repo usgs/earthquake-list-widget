@@ -276,7 +276,7 @@ var EqList = function (params) {
       return;
     }
 
-    events.sort(_compareEvents || _this._compareEvents);
+    events.sort(_compareEvents || _this.compareEvents);
 
     for (i = 0; i < len; i++) {
       markup.push(_this.getEventMarkup(events[i]));
