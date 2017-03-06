@@ -16,17 +16,17 @@ var _ROMANS = [
 
 var Util = {
   decToRoman: function (dec) {
-    var intval = parseInt(dec||0, 10);
+    var val = Math.round(dec || 0);
 
-    if (intval < 0) {
-      intval = 0;
+    if (val < 0) {
+      val = 0;
     }
 
-    if (intval > (_ROMANS.length - 1)) {
-      intval = _ROMANS.length - 1;
+    if (val > (_ROMANS.length - 1)) {
+      val = _ROMANS.length - 1;
     }
 
-    return _ROMANS[intval];
+    return _ROMANS[val];
   },
 
   formatDate: function (stamp) {
