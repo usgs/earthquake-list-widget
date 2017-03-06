@@ -3,7 +3,7 @@
 var Util = require('listwidget/Util');
 
 
-var _BASE_URL = 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/',
+var _BASE_URL = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/',
     _LOADED_CSS = {},
     _REGISTERED_PARSERS = {},
     _VALIDATE_URL = true;
