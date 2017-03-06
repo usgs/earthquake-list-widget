@@ -10,6 +10,7 @@ before_install:
   - npm --version
   - node --version
   - npm list -g
+  - gem install compass
 install:
   - npm install phantomjs-prebuilt
   - npm install
