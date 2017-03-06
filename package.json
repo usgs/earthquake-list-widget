@@ -38,7 +38,7 @@
     "grunt-contrib-jshint": "0.11.0",
     "grunt-contrib-uglify": "0.7.0",
     "grunt-contrib-watch": "0.6.1",
-    "grunt-mocha-phantomjs": "0.6.0",
+    "grunt-mocha-phantomjs": "3.0.0",
     "hazdev-template": "0.2.0",
     "mocha": "2.1.0"
   },

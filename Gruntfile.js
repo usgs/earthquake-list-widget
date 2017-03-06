@@ -15,13 +15,17 @@ module.exports = function (grunt) {
     'jshint'
   ]);
 
-  grunt.registerTask('default', [
+  grunt.registerTask('test', [
     'build',
+    'connect:test',
+    'mocha_phantomjs'
+  ]);
+
+  grunt.registerTask('default', [
+    'test',
     'configureProxies:dev',
     'connect:dev',
     'connect:template',
-    'connect:test',
-    'mocha_phantomjs',
     'watch'
   ]);
 
