@@ -2,6 +2,7 @@
 
 if (!isset($TEMPLATE)) {
   $TITLE = 'DYFI List';
+  $HEAD = '<link rel="stylesheet" href="earthquake-list-widget.css"/>';
   $FOOT = '<script src="earthquake-list-widget.js"></script>' .
       '<script src="DYFIList.js"></script>';
 }
@@ -27,6 +28,6 @@ include '_example.inc.php';
   <div id="pastday-list"></div>
 </section>
 <section class="pastweek list">
-  <h2>Felt Events Past 7 Days</h2>
+  <h2>Felt Events Past 7 Days (nresp > 5)</h2>
   <div id="pastweek-list"></div>
 </section>

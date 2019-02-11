@@ -2,6 +2,7 @@
 
 if (!isset($TEMPLATE)) {
   $TITLE = 'Default Earthquake List';
+  $HEAD = '<link rel="stylesheet" href="earthquake-list-widget.css"/>';
   $FOOT = '<script src="earthquake-list-widget.js"></script>' .
       '<script src="EqList.js"></script>';
 }

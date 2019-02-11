@@ -2,6 +2,7 @@
 
 if (!isset($TEMPLATE)) {
   $TITLE = 'Pager List';
+  $HEAD = '<link rel="stylesheet" href="earthquake-list-widget.css"/>';
   $FOOT = '<script src="earthquake-list-widget.js"></script>' .
       '<script src="PAGERList.js"></script>';
 }
