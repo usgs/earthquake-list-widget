@@ -49,7 +49,7 @@ A list can be customized in several ways.
 
 First, you can provide a different URL for the ```feed``` parameter to the
 constructor. Any URL specified must return data in the
-[USGS GeoJSONP feed format](http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php).
+[USGS GeoJSON feed format](http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php).
 
 If a predefined feed does not provide the exact sub-set of earthquake data, it
 is recommended one use the smallest feed that is a superset of the desired

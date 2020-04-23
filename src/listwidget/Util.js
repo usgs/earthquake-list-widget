@@ -48,10 +48,16 @@ var Util = {
   },
 
   formatDepth: function (depth) {
+    if (depth === null) {
+      return '&ndash;';
+    }
     return depth.toFixed(1);
   },
 
   formatMagnitude: function (magnitude) {
+    if (magnitude === null) {
+      return '&ndash;';
+    }
     return magnitude.toFixed(1);
   }
 };

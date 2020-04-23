@@ -4,94 +4,26 @@ var Util = require('listwidget/Util');
 
 
 var _BASE_URL = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/',
-    _LOADED_CSS = {},
-    _REGISTERED_PARSERS = {},
-    _VALIDATE_URL = true;
-
-
-var SIG_URL_MONTH = _BASE_URL + 'significant_month.geojsonp',
-    SIG_URL_WEEK  = _BASE_URL + 'significant_week.geojsonp',
-    SIG_URL_DAY   = _BASE_URL + 'significant_day.geojsonp',
-    SIG_URL_HOUR   = _BASE_URL + 'significant_hour.geojsonp',
-    ALL_URL_MONTH = _BASE_URL + 'all_month.geojsonp',
-    ALL_URL_WEEK  = _BASE_URL + 'all_week.geojsonp',
-    ALL_URL_DAY   = _BASE_URL + 'all_day.geojsonp',
-    ALL_URL_HOUR   = _BASE_URL + 'all_hour.geojsonp',
-    M45_URL_MONTH = _BASE_URL + '4.5_month.geojsonp',
-    M45_URL_WEEK = _BASE_URL + '4.5_week.geojsonp',
-    M45_URL_DAY = _BASE_URL + '4.5_day.geojsonp',
-    M45_URL_HOUR = _BASE_URL + '4.5_hour.geojsonp',
-    M25_URL_MONTH = _BASE_URL + '2.5_month.geojsonp',
-    M25_URL_WEEK = _BASE_URL + '2.5_week.geojsonp',
-    M25_URL_DAY = _BASE_URL + '2.5_day.geojsonp',
-    M25_URL_HOUR = _BASE_URL + '2.5_hour.geojsonp',
-    M1_URL_MONTH = _BASE_URL + '1.0_month.geojsonp',
-    M1_URL_WEEK = _BASE_URL + '1.0_week.geojsonp',
-    M1_URL_DAY = _BASE_URL + '1.0_day.geojsonp',
-    M1_URL_HOUR = _BASE_URL + '1.0_hour.geojsonp';
-
-
-var __register_parser = function (feed, callback) {
-  var parsers = _REGISTERED_PARSERS[feed];
-
-  if (typeof parsers === 'undefined' || parsers === null) {
-    parsers = [];
-  }
-
-  parsers.push(callback);
-  _REGISTERED_PARSERS[feed] = parsers;
-};
-
-var __notify_parser = function (parsers, data) {
-  var i = 0, len = parsers.length;
-
-  for (; i < len; i++) {
-    parsers[i].call(null, data);
-  }
-};
-
-var __findCss = function (params) {
-  var _name = params.name || null,
-      p = document.querySelector('head'),
-      regex = new RegExp(_name + '\\.js$'),
-      src = null,
-      scripts = document.querySelectorAll('script[src]');
-
-  if (p && _name) {
-    // Got a head element. Cool.
-
-    // Try to guess where the CSS is...
-    for (var i = 0; (typeof url==='undefined') && i < scripts.length; i++) {
-      src = scripts[i].src;
-      if (src.match(regex)) {
-        return src.replace(/\.js$/, '.css');
-      }
-    }
-
-    return null;
-  } else {
-    // No head element. Sucky.
-    // TODO
-    try {
-      console.log('EqList::No head element.');
-    } catch (e) {/*Ignore*/}
-  }
-};
-
-var __loadCss = function (params) {
-  var _url = params.url,
-
-      p = document.querySelector('head');
-
-
-  if (p && _url !== null && !_LOADED_CSS.hasOwnProperty(_url)) {
-    var style = document.createElement('link');
-    style.setAttribute('rel', 'stylesheet');
-    style.setAttribute('href', _url);
-    p.appendChild(style);
-    _LOADED_CSS[_url] = true;
-  }
-};
+    SIG_URL_MONTH = _BASE_URL + 'significant_month.geojson',
+    SIG_URL_WEEK  = _BASE_URL + 'significant_week.geojson',
+    SIG_URL_DAY   = _BASE_URL + 'significant_day.geojson',
+    SIG_URL_HOUR   = _BASE_URL + 'significant_hour.geojson',
+    ALL_URL_MONTH = _BASE_URL + 'all_month.geojson',
+    ALL_URL_WEEK  = _BASE_URL + 'all_week.geojson',
+    ALL_URL_DAY   = _BASE_URL + 'all_day.geojson',
+    ALL_URL_HOUR   = _BASE_URL + 'all_hour.geojson',
+    M45_URL_MONTH = _BASE_URL + '4.5_month.geojson',
+    M45_URL_WEEK = _BASE_URL + '4.5_week.geojson',
+    M45_URL_DAY = _BASE_URL + '4.5_day.geojson',
+    M45_URL_HOUR = _BASE_URL + '4.5_hour.geojson',
+    M25_URL_MONTH = _BASE_URL + '2.5_month.geojson',
+    M25_URL_WEEK = _BASE_URL + '2.5_week.geojson',
+    M25_URL_DAY = _BASE_URL + '2.5_day.geojson',
+    M25_URL_HOUR = _BASE_URL + '2.5_hour.geojson',
+    M1_URL_MONTH = _BASE_URL + '1.0_month.geojson',
+    M1_URL_WEEK = _BASE_URL + '1.0_week.geojson',
+    M1_URL_DAY = _BASE_URL + '1.0_day.geojson',
+    M1_URL_HOUR = _BASE_URL + '1.0_hour.geojson';
 
 
 /**
@@ -191,14 +123,13 @@ var EqList = function (params) {
    * @see EqList#load
    */
   _fetchList = function () {
-    var s = document.createElement('script');
-        s.src = _feed;
+    var xhr = new XMLHttpRequest();
 
-    __register_parser(_feed, function (data) {
-        _render(data);
-        s.parentNode.removeChild(s);
+    xhr.open('GET', _feed, true);
+    xhr.addEventListener('load', function () {
+      _render(JSON.parse(xhr.responseText));
     });
-    document.querySelector('script').parentNode.appendChild(s);
+    xhr.send();
   };
 
   /**
@@ -263,7 +194,7 @@ var EqList = function (params) {
    * @param data {GeoJSON}
    *      The data containing events to render.
    */
-  _render = function (data) {
+  _render = _this.render = function (data) {
     var events = _filterEvents(data.features),
         i = 0,
         len = events.length,
@@ -394,7 +325,14 @@ var EqList = function (params) {
    *      The content to render as "title" text.
    */
   _this.getEventTitle = function (e) {
-    return e.properties.place;
+    var status = e.properties.status,
+        place = e.properties.place;
+
+    if (status === 'deleted') {
+      place = '(Deleted) ' + place;
+    }
+
+    return place;
   };
 
   /**
@@ -430,7 +368,6 @@ var EqList = function (params) {
    *
    */
   _this.load = function () {
-    __loadCss({url: _css || __findCss({name: 'earthquake-list-widget'})});
     _generateLoading();
     _fetchList();
   };
@@ -439,68 +376,6 @@ var EqList = function (params) {
   _initialize(params||{});
   params = null;
   return _this;
-};
-
-
-/**
- * @PublicStaticMethod
- *
- * Determines whether or not to validate the URL of the returned data when
- * before notifying registered parsers. If validation is disabled, all currently
- * parsers are notified of returned data regardless of whether or not that
- * parser was interested in the returne data. If set to true, only parsers that
- * are registered with the URL of the returned data will be notified.
- *
- * Note: Each registered parser is unregistered after the first time it is
- * notified of returned data. Thus, setting this to false is potentially
- * dangerous if multiple EqList instances are put on a single page.
- *
- * If this method is never called, default behavior is to validate URLs.
- *
- * @param validateUrl {Boolean}
- *      True if URLs should be validated, false otherwise.
- */
-EqList.setValidateUrl = function (validateUrl) {
-  _VALIDATE_URL = validateUrl;
-};
-
-/**
- * @PublicStaticMethod
- *
- * Unregisters a registered listener.
- *
- * @param key {String}
- *      The identifier for the listener to unregister.
- */
-EqList.unregisterListener = function (key) {
-  _REGISTERED_PARSERS[key] = null;
-  delete _REGISTERED_PARSERS[key];
-};
-
-
-/**
- * @GlobalMethod
- *
- * This method is the default JSONP method used on realtime data feeds.
- *
- * @param data {GeoJSON}
- *      The data returned by the JSONP request.
- */
-window.eqfeed_callback = function (data) {
-  var url = data.metadata.url,
-      key = null;
-
-  for (key in _REGISTERED_PARSERS) {
-    if (url.indexOf(key) !== -1 || _VALIDATE_URL === false) {
-      // Found it; notify.
-      __notify_parser(_REGISTERED_PARSERS[key], data);
-
-      // Unregister for this feed
-      if (_VALIDATE_URL === true) {
-        EqList.unregisterListener(key);
-      }
-    }
-  }
 };
 
 

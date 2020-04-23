@@ -36,8 +36,15 @@ var PAGERList = function (params) {
    *
    * @Overrides EqList#getEventTitle
    */
-   _this.getEventTitle = function (e) {
-    return e.properties.title;
+  _this.getEventTitle = function (e) {
+    var status = e.properties.status,
+        title = e.properties.title;
+
+    if (status === 'deleted') {
+      title = '(Deleted) ' + title;
+    }
+
+    return title;
   };
 
   /**

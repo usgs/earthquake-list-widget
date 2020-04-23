@@ -3,12 +3,12 @@
 var config = {
   browserify: require('./browserify'),
   clean: require('./clean'),
-  compass: require('./compass'),
   connect: require('./connect'),
   copy: require('./copy'),
   cssmin: require('./cssmin'),
   jshint: require('./jshint'),
   mocha_phantomjs: require('./mocha_phantomjs'),
+  sass: require('./sass'),
   uglify: require('./uglify'),
   watch: require('./watch'),
 
@@ -17,12 +17,12 @@ var config = {
     'grunt-connect-proxy',
     'grunt-connect-rewrite',
     'grunt-contrib-clean',
-    'grunt-contrib-compass',
     'grunt-contrib-connect',
     'grunt-contrib-copy',
     'grunt-contrib-cssmin',
     'grunt-contrib-jshint',
     'grunt-mocha-phantomjs',
+    'grunt-node-sass',
     'grunt-contrib-uglify',
     'grunt-contrib-watch'
   ]
