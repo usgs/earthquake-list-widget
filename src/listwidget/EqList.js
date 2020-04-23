@@ -325,7 +325,14 @@ var EqList = function (params) {
    *      The content to render as "title" text.
    */
   _this.getEventTitle = function (e) {
-    return e.properties.place;
+    var status = e.properties.status,
+        place = e.properties.place;
+
+    if (status === 'deleted') {
+      place = '(Deleted) ' + place;
+    }
+
+    return place;
   };
 
   /**
