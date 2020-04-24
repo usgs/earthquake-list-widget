@@ -32,6 +32,15 @@ var DYFIList = function (params) {
   /**
    * @APIMethod
    *
+   * @Overrides EqList#getEventLink
+   */
+  _this.getEventLink = function (e) {
+    return e.properties.url + '#impact_dyfi';
+  };
+
+  /**
+   * @APIMethod
+   *
    * @Overrides EqList#getEventTitle
    */
    _this.getEventTitle = function (e) {
